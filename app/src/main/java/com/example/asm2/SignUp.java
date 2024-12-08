@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,27 +19,36 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.Firebase;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Text;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
     private FirebaseAuth auth;
-    private FirebaseFirestore db;
+    private FirebaseFirestore fstore;
     private EditText editFullName, editEmail, editPassword, editPhone, editDateofBirth;
     private Button btnSignUp;
     private TextView signInPrompt;
     private ImageButton btnDatePicker;
+    private Boolean valid = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +56,8 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        fstore = FirebaseFirestore.getInstance();
+
         editFullName = findViewById(R.id.editFullName);
         editEmail = findViewById(R.id.editEmail);
         editPassword = findViewById(R.id.editPassword);
@@ -63,39 +74,47 @@ public class SignUp extends AppCompatActivity {
             }
         });
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String fullName = editFullName.getText().toString();
-                String emailAddress = editEmail.getText().toString();
-                String password = editPassword.getText().toString();
-                String phone = editPhone.getText().toString();
-                String dateOfBirth = editDateofBirth.getText().toString();
+        btnSignUp.setOnClickListener(v -> {
+            checkField(editFullName);
+            checkField(editEmail);
+            checkField(editPassword);
+            checkField(editPhone);
+            checkField(editDateofBirth);
 
-                if (fullName.isEmpty() || emailAddress.isEmpty() || password.isEmpty() || phone.isEmpty() || dateOfBirth.isEmpty()) {
-                    Toast.makeText(SignUp.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                } else {
-                    auth.createUserWithEmailAndPassword(emailAddress, password).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Create a new user with the provided details
-                            User user = new User(fullName, emailAddress, dateOfBirth);
+            if (valid) {
+                // Start user registration
+                auth.createUserWithEmailAndPassword(editEmail.getText().toString(), editPassword.getText().toString())
+                        .addOnSuccessListener(authResult -> {
+                            Toast.makeText(SignUp.this, "User created", Toast.LENGTH_SHORT).show();
 
-                            // Store user data in Firestore
-                            db.collection("users").document(auth.getCurrentUser().getUid())
-                                    .set(user)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(SignUp.this, "Sign up successful", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(SignUp.this, SignIn.class));
-                                        finish();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(SignUp.this, "Failed to store user data", Toast.LENGTH_SHORT).show();
-                                    });
-                        } else {
-                            Toast.makeText(SignUp.this, "Sign up failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                            DocumentReference df = fstore.collection("users").document(auth.getCurrentUser().getUid());
+                            Map<String, Object> userInfo = new HashMap<>();
+                            userInfo.put("FullName", editFullName.getText().toString());
+                            userInfo.put("Email", editEmail.getText().toString());
+                            userInfo.put("Phone", editPhone.getText().toString());
+                            userInfo.put("DateOfBirth", editDateofBirth.getText().toString());
+
+                            // Specify user role
+                            if (editEmail.getText().toString().endsWith("@admin.com")) {
+                                userInfo.put("isAdmin", "1"); // Admin
+                            } else {
+                                userInfo.put("isUser", "1"); // Regular User
+                            }
+
+                            df.set(userInfo);
+
+                            // Redirect to MainActivity or Admin
+                            if (userInfo.containsKey("isAdmin")) {
+                                startActivity(new Intent(getApplicationContext(), Admin.class));
+                            } else {
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            }
+                            finish();
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(SignUp.this, "Failed to create user", Toast.LENGTH_SHORT).show();
+                        });
+            } else {
+                Toast.makeText(SignUp.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -105,6 +124,17 @@ public class SignUp extends AppCompatActivity {
                 startActivity(new Intent(SignUp.this, SignIn.class));
             }
         });
+    }
+
+    public boolean checkField(EditText textField){
+        if(textField.getText().toString().isEmpty()){
+            textField.setError("Error");
+            valid = false;
+        }else {
+            valid = true;
+        }
+
+        return valid;
     }
 
     private void showDatePickerDialog() {
