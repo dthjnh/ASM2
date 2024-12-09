@@ -14,8 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.asm2.Admin;
-import com.example.asm2.MainActivity;
 import com.example.asm2.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;

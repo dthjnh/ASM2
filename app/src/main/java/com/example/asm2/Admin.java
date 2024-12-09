@@ -21,6 +21,10 @@ public class Admin extends AppCompatActivity {
         startActivity(new Intent(Admin.this, AddDonationSiteActivity.class)); // Redirect to AddDonationSiteActivity
     }
 
+    public void viewDonors(View view) {
+        startActivity(new Intent(Admin.this, ViewDonorsActivity.class)); // Redirect to ViewDonorsActivity
+    }
+
     // Logout method linked to the button
     public void logoutAdmin(View view) {
         FirebaseAuth.getInstance().signOut(); // Sign out from Firebase

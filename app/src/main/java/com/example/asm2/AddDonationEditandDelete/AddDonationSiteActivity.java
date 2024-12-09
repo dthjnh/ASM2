@@ -9,12 +9,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asm2.DatabaseHelper;
+import com.example.asm2.MapsActivity;
 import com.example.asm2.R;
 
 public class AddDonationSiteActivity extends AppCompatActivity {
 
     private EditText editAddress, editHours, editBloodTypes, editLatitude, editLongitude;
-    private Button btnSave, btnListDonationSites;
+    private Button btnSave, btnListDonationSites, btnViewOnMap;
     private DatabaseHelper dbHelper;
 
     @SuppressLint("MissingInflatedId")
@@ -30,12 +31,17 @@ public class AddDonationSiteActivity extends AppCompatActivity {
         editLongitude = findViewById(R.id.editLongitude);
         btnSave = findViewById(R.id.btnSave);
         btnListDonationSites = findViewById(R.id.btnListDonationSites);
+        btnViewOnMap = findViewById(R.id.btnViewOnMap);
+
+        dbHelper = new DatabaseHelper(this);
+
+        btnViewOnMap.setOnClickListener(v -> {
+            startActivity(new Intent(AddDonationSiteActivity.this, MapsActivity.class));
+        });
 
         btnListDonationSites.setOnClickListener(v -> {
             startActivity(new Intent(AddDonationSiteActivity.this, DonationSiteListActivity.class));
         });
-
-        dbHelper = new DatabaseHelper(this);
 
         btnSave.setOnClickListener(v -> {
             String address = editAddress.getText().toString().trim();

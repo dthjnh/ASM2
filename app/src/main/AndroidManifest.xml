@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -28,8 +33,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAmYG0ewlmb4zaJAkC6pBsFjqi0NBQu-Po" />
 
-
-
         <activity
             android:name=".Login.SignIn"
             android:exported="true">
@@ -40,21 +43,14 @@
             </intent-filter>
         </activity> <!-- SignUp activity -->
         <activity android:name=".Login.SignUp" /> <!-- Main activity for regular users -->
-        <activity android:name=".MainActivity" /> <!-- Admin activity -->
+        <activity android:name=".UserActivity" /> <!-- Admin activity -->
         <activity android:name=".Admin" />
         <activity android:name=".AddDonationEditandDelete.AddDonationSiteActivity" />
         <activity android:name=".AddDonationEditandDelete.DonationSiteListActivity" />
         <activity android:name=".AddDonationEditandDelete.EditDonationSiteActivity" />
-        <activity
-            android:name=".MapsActivity"
-            android:exported="true"
-            android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MapsActivity" />
+        <activity android:name=".RegisterDonorActivity" />
+        <activity android:name=".ViewDonorsActivity"/>
     </application>
 
 </manifest>

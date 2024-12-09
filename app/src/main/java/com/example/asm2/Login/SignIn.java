@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asm2.Admin;
-import com.example.asm2.MainActivity;
+import com.example.asm2.UserActivity;
 import com.example.asm2.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,7 +59,7 @@ public class SignIn extends AppCompatActivity {
                                 public void onSuccess(AuthResult authResult) {
                                     Toast.makeText(SignIn.this, "Sign In Successful", Toast.LENGTH_SHORT).show();
                                     checkIUserAccessLevel(authResult.getUser().getUid());
-                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    startActivity(new Intent(getApplicationContext(), UserActivity.class));
                                     finish();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -94,7 +94,7 @@ public class SignIn extends AppCompatActivity {
                 finish();
             } else if (documentSnapshot.getString("isUser") != null) {
                 // User is regular user
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), UserActivity.class));
                 finish();
             } else {
                 // Handle unexpected cases

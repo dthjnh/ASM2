@@ -1,33 +1,41 @@
 package com.example.asm2;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationRequest;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.asm2.AddDonationEditandDelete.DonationSite;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.asm2.databinding.ActivityMapsBinding;
-import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
-
-    protected FusedLocationProviderClient client;
-    protected LocationRequest mLocationRequest;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,42 +48,95 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        dbHelper = new DatabaseHelper(this);
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    private BitmapDescriptor getBitmapDescriptorFromVector(int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(this, vectorResId);
+        if (vectorDrawable == null) {
+            throw new IllegalArgumentException("Resource not found: " + vectorResId);
+        }
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
-    public void getPosition(View view) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        LatLng rmit = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(rmit).title("Marker in RMIT"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(rmit));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(rmit, 15));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        // Retrieve donation sites from the database
+        List<DonationSite> donationSites = dbHelper.getAllDonationSites();
+
+        for (DonationSite site : donationSites) {
+            LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
+            mMap.addMarker(new MarkerOptions()
+                    .position(location)
+                    .title(site.getAddress())
+                    .snippet("Opening Hours: " + site.getHours() + "\nBlood Type Require: " + site.getBloodTypes())
+                    .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
         }
-        client.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    String message = "Last Location: " + Double.toString(location.getLongitude()) + ", " + Double.toString(location.getLongitude());
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title("Last Location"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                    Toast.makeText(MapsActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
-            }
+
+        if (!donationSites.isEmpty()) {
+            LatLng firstLocation = new LatLng(donationSites.get(0).getLatitude(), donationSites.get(0).getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 12));
+        }
+
+        // Handle marker clicks to show custom dialog
+        mMap.setOnMarkerClickListener(marker -> {
+            showDonationSiteDialog(marker);
+            return true; // Consume the click event
         });
+    }
+
+    private void showDonationSiteDialog(Marker marker) {
+        // Create a custom dialog
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_donation_site_info); // Ensure this layout exists
+
+        // Set dialog views
+        TextView title = dialog.findViewById(R.id.dialogTitle);
+        TextView hours = dialog.findViewById(R.id.dialogHours);
+        TextView bloodTypes = dialog.findViewById(R.id.dialogBloodTypes);
+        Button btnRegister = dialog.findViewById(R.id.btnDialogRegister);
+        Button btnClose = dialog.findViewById(R.id.btnDialogClose);
+
+        // Populate dialog with marker info
+        title.setText(marker.getTitle());
+        String[] snippetParts = marker.getSnippet().split("\n");
+        if (snippetParts.length > 0) {
+            hours.setText(snippetParts[0]); // Opening hours
+        }
+        if (snippetParts.length > 1) {
+            bloodTypes.setText(snippetParts[1]); // Blood types
+        }
+
+        // Handle register button click
+        btnRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(MapsActivity.this, RegisterDonorActivity.class);
+            intent.putExtra("site_address", marker.getTitle());
+            startActivity(intent);
+            dialog.dismiss(); // Close the dialog
+        });
+
+        // Handle close button click
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        // Show the dialog
+        dialog.show();
+    }
+
+    public void backToAdmin(View view) {
+        finish(); // Close the MapsActivity and return to Admin activity
     }
 }
