@@ -15,23 +15,20 @@
 
         <!-- Main launcher activity -->
         <activity
-            android:name=".SignIn"
+            android:name=".Login.SignIn"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- SignUp activity -->
-        <activity android:name=".SignUp" />
-
-        <!-- Main activity for regular users -->
-        <activity android:name=".MainActivity" />
-
-        <!-- Admin activity -->
+        </activity> <!-- SignUp activity -->
+        <activity android:name=".Login.SignUp" /> <!-- Main activity for regular users -->
+        <activity android:name=".MainActivity" /> <!-- Admin activity -->
         <activity android:name=".Admin" />
-
+        <activity android:name=".AddDonationEditandDelete.AddDonationSiteActivity" />
+        <activity android:name=".AddDonationEditandDelete.DonationSiteListActivity" />
+        <activity android:name=".AddDonationEditandDelete.EditDonationSiteActivity"/>
     </application>
 
 </manifest>
