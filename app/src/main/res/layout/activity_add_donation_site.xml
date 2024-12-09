@@ -22,6 +22,18 @@
         android:layout_height="wrap_content"
         android:hint="Required Blood Types" />
 
+    <EditText
+        android:id="@+id/editLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Latitude" />
+
+    <EditText
+        android:id="@+id/editLongitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Longitutde" />
+
     <Button
         android:id="@+id/btnSave"
         android:layout_width="match_parent"

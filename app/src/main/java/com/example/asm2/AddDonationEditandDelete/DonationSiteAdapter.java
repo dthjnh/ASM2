@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.widget.ArrayAdapter;
 
 import com.example.asm2.DatabaseHelper;
 import com.example.asm2.R;
@@ -36,12 +37,16 @@ public class DonationSiteAdapter extends ArrayAdapter<DonationSite> {
         TextView txtAddress = convertView.findViewById(R.id.txtAddress);
         TextView txtHours = convertView.findViewById(R.id.txtHours);
         TextView txtBloodTypes = convertView.findViewById(R.id.txtBloodTypes);
+        TextView txtLatitude = convertView.findViewById(R.id.txtLatitude);  // New TextView for latitude
+        TextView txtLongitude = convertView.findViewById(R.id.txtLongitude); // New TextView for longitude
         Button btnEdit = convertView.findViewById(R.id.btnEdit);
         Button btnDelete = convertView.findViewById(R.id.btnDelete);
 
         txtAddress.setText(site.getAddress());
         txtHours.setText(site.getHours());
         txtBloodTypes.setText(site.getBloodTypes());
+        txtLatitude.setText("Lat: " + site.getLatitude());  // Display latitude
+        txtLongitude.setText("Lng: " + site.getLongitude()); // Display longitude
 
         // Handle Edit button
         btnEdit.setOnClickListener(v -> {

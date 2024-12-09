@@ -27,6 +27,18 @@
         android:layout_height="wrap_content"
         android:text="Blood Types" />
 
+    <TextView
+        android:id="@+id/txtLatitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latitude" />
+
+    <TextView
+        android:id="@+id/txtLongitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Longitude" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

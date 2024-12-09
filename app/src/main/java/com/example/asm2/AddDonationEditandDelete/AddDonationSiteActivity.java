@@ -13,7 +13,7 @@ import com.example.asm2.R;
 
 public class AddDonationSiteActivity extends AppCompatActivity {
 
-    private EditText editAddress, editHours, editBloodTypes;
+    private EditText editAddress, editHours, editBloodTypes, editLatitude, editLongitude;
     private Button btnSave, btnListDonationSites;
     private DatabaseHelper dbHelper;
 
@@ -26,6 +26,8 @@ public class AddDonationSiteActivity extends AppCompatActivity {
         editAddress = findViewById(R.id.editAddress);
         editHours = findViewById(R.id.editHours);
         editBloodTypes = findViewById(R.id.editBloodTypes);
+        editLatitude = findViewById(R.id.editLatitude);
+        editLongitude = findViewById(R.id.editLongitude);
         btnSave = findViewById(R.id.btnSave);
         btnListDonationSites = findViewById(R.id.btnListDonationSites);
 
@@ -36,20 +38,32 @@ public class AddDonationSiteActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
         btnSave.setOnClickListener(v -> {
-            String address = editAddress.getText().toString();
-            String hours = editHours.getText().toString();
-            String bloodTypes = editBloodTypes.getText().toString();
+            String address = editAddress.getText().toString().trim();
+            String hours = editHours.getText().toString().trim();
+            String bloodTypes = editBloodTypes.getText().toString().trim();
+            String latitudeStr = editLatitude.getText().toString().trim();
+            String longitudeStr = editLongitude.getText().toString().trim();
 
-            if (address.isEmpty() || hours.isEmpty() || bloodTypes.isEmpty()) {
+            // Validate inputs
+            if (address.isEmpty() || hours.isEmpty() || bloodTypes.isEmpty() || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
                 Toast.makeText(AddDonationSiteActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-            } else {
-                boolean success = dbHelper.insertDonationSite(address, hours, bloodTypes);
+                return;
+            }
+
+            try {
+                double latitude = Double.parseDouble(latitudeStr);
+                double longitude = Double.parseDouble(longitudeStr);
+
+                // Insert the donation site into the database
+                boolean success = dbHelper.insertDonationSite(address, hours, bloodTypes, latitude, longitude);
                 if (success) {
                     Toast.makeText(AddDonationSiteActivity.this, "Donation site added successfully", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(AddDonationSiteActivity.this, DonationSiteListActivity.class));
                 } else {
                     Toast.makeText(AddDonationSiteActivity.this, "Error adding site", Toast.LENGTH_SHORT).show();
                 }
+            } catch (NumberFormatException e) {
+                Toast.makeText(AddDonationSiteActivity.this, "Invalid latitude or longitude", Toast.LENGTH_SHORT).show();
             }
         });
     }

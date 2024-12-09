@@ -69,8 +69,9 @@ public class SignUp extends AppCompatActivity {
                 // Start user registration
                 auth.createUserWithEmailAndPassword(editEmail.getText().toString(), editPassword.getText().toString())
                         .addOnSuccessListener(authResult -> {
-                            Toast.makeText(SignUp.this, "User created", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUp.this, "User created successfully. Please sign in.", Toast.LENGTH_SHORT).show();
 
+                            // Save user info to Firestore
                             DocumentReference df = fstore.collection("users").document(auth.getCurrentUser().getUid());
                             Map<String, Object> userInfo = new HashMap<>();
                             userInfo.put("FullName", editFullName.getText().toString());
@@ -85,15 +86,18 @@ public class SignUp extends AppCompatActivity {
                                 userInfo.put("isUser", "1"); // Regular User
                             }
 
-                            df.set(userInfo);
+                            df.set(userInfo).addOnSuccessListener(aVoid -> {
+                                // Log out the user
+                                auth.signOut();
 
-                            // Redirect to MainActivity or Admin
-                            if (userInfo.containsKey("isAdmin")) {
-                                startActivity(new Intent(getApplicationContext(), Admin.class));
-                            } else {
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            }
-                            finish();
+                                // Redirect to SignIn page
+                                Intent intent = new Intent(SignUp.this, SignIn.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish(); // Close the SignUp activity
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(SignUp.this, "Failed to save user info", Toast.LENGTH_SHORT).show();
+                            });
                         }).addOnFailureListener(e -> {
                             Toast.makeText(SignUp.this, "Failed to create user", Toast.LENGTH_SHORT).show();
                         });
