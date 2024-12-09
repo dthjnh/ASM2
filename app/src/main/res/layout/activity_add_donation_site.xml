@@ -51,4 +51,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View on Map" />
+
+    <Button
+        android:id="@+id/btnBackToAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Admin" />
 </LinearLayout>

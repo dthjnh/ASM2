@@ -1,0 +1,59 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Spinner for donor names -->
+    <Spinner
+        android:id="@+id/donorNameSpinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- EditText for blood amount -->
+    <EditText
+        android:id="@+id/editBloodAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter blood amount"
+        app:layout_constraintTop_toBottomOf="@id/donorNameSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- EditText for blood types -->
+    <EditText
+        android:id="@+id/editBloodTypes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter blood types"
+        app:layout_constraintTop_toBottomOf="@id/editBloodAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- Button for submitting donation -->
+    <Button
+        android:id="@+id/btnSubmitDonation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit Donation"
+        app:layout_constraintTop_toBottomOf="@id/editBloodTypes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+
+    <!-- TextView to display donation details -->
+    <TextView
+        android:id="@+id/donationDetailsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Donation details will appear here."
+        app:layout_constraintTop_toBottomOf="@id/btnSubmitDonation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -35,7 +35,7 @@ public class DonationSiteListActivity extends AppCompatActivity {
         btnBackToAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DonationSiteListActivity.this, Admin.class);
+                Intent intent = new Intent(DonationSiteListActivity.this, AddDonationSiteActivity.class);
                 startActivity(intent);
                 finish();
             }

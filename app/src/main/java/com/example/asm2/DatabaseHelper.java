@@ -13,8 +13,9 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    // Database constants
     private static final String DATABASE_NAME = "BloodDonation.db";
-    private static final int DATABASE_VERSION = 3; // Incremented for donor table
+    private static final int DATABASE_VERSION = 4; // Incremented for donation drive table
 
     // Donation sites table
     public static final String TABLE_NAME = "donation_sites";
@@ -31,6 +32,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DONOR_COLUMN_NAME = "name";
     public static final String DONOR_COLUMN_CONTACT = "contact";
     public static final String DONOR_COLUMN_SITE_ADDRESS = "site_address";
+
+    // Donation drive table
+    public static final String DONATION_DRIVE_TABLE = "donation_drive";
+    public static final String COLUMN_DONOR_ID = "donor_id";
+    public static final String COLUMN_BLOOD_AMOUNT = "blood_amount";
+    public static final String COLUMN_DONATION_BLOOD_TYPES = "donation_blood_types";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -55,6 +62,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DONOR_COLUMN_CONTACT + " TEXT NOT NULL, " +
                 DONOR_COLUMN_SITE_ADDRESS + " TEXT NOT NULL)";
         db.execSQL(createDonorsTable);
+
+        // Create donation drive table
+        String createDonationDriveTable = "CREATE TABLE " + DONATION_DRIVE_TABLE + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_DONOR_ID + " INTEGER NOT NULL, " +
+                COLUMN_BLOOD_AMOUNT + " TEXT NOT NULL, " +
+                COLUMN_DONATION_BLOOD_TYPES + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + COLUMN_DONOR_ID + ") REFERENCES " + DONORS_TABLE_NAME + "(" + DONOR_COLUMN_ID + "))";
+        db.execSQL(createDonationDriveTable);
     }
 
     @Override
@@ -70,6 +86,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     DONOR_COLUMN_CONTACT + " TEXT NOT NULL, " +
                     DONOR_COLUMN_SITE_ADDRESS + " TEXT NOT NULL)";
             db.execSQL(createDonorsTable);
+        }
+        if (oldVersion < 4) {
+            String createDonationDriveTable = "CREATE TABLE " + DONATION_DRIVE_TABLE + " (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_DONOR_ID + " INTEGER NOT NULL, " +
+                    COLUMN_BLOOD_AMOUNT + " TEXT NOT NULL, " +
+                    COLUMN_DONATION_BLOOD_TYPES + " TEXT NOT NULL, " +
+                    "FOREIGN KEY (" + COLUMN_DONOR_ID + ") REFERENCES " + DONORS_TABLE_NAME + "(" + DONOR_COLUMN_ID + "))";
+            db.execSQL(createDonationDriveTable);
         }
     }
 
@@ -157,7 +182,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getAllDonors() {
-    SQLiteDatabase db = this.getReadableDatabase();
-    return db.rawQuery("SELECT id AS _id, name, contact, site_address FROM " + DONORS_TABLE_NAME, null);
-}
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT id AS _id, name, contact, site_address FROM " + DONORS_TABLE_NAME, null);
+    }
+
+    // Donation Drive Methods
+
+    public boolean insertDonationDrive(int donorId, String bloodAmount, String bloodTypes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DONOR_ID, donorId);
+        values.put(COLUMN_BLOOD_AMOUNT, bloodAmount);
+        values.put(COLUMN_DONATION_BLOOD_TYPES, bloodTypes);
+
+        long result = db.insert(DONATION_DRIVE_TABLE, null, values);
+        return result != -1;
+    }
+
+    public Cursor getDonationDriveByDonorId(int donorId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + DONATION_DRIVE_TABLE + " WHERE " + COLUMN_DONOR_ID + "=?", new String[]{String.valueOf(donorId)});
+    }
 }
