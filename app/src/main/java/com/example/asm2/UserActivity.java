@@ -28,6 +28,10 @@ public class UserActivity extends AppCompatActivity {
         startActivity(new Intent(UserActivity.this, ViewDonorsActivity.class));
     }
 
+    public void viewVolunteers(View view) {
+        startActivity(new Intent(UserActivity.this, UserViewVolunteerActivity.class));
+    }
+
     public void logoutUser(View view) {
         FirebaseAuth.getInstance().signOut(); // Sign out from Firebase
         startActivity(new Intent(UserActivity.this, SignIn.class));

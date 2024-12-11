@@ -31,6 +31,14 @@ public class Admin extends AppCompatActivity {
         startActivity(new Intent(Admin.this, DonationDriveActivity.class));
     }
 
+    public void registerVolunteer(View view) {
+        startActivity(new Intent(Admin.this, RegisterVolunteerActivity.class));
+    }
+
+    public void viewVolunteers(View view) {
+        startActivity(new Intent(Admin.this, ViewVolunteerActivity.class));
+    }
+
     // Logout method linked to the button
     public void logoutAdmin(View view) {
         FirebaseAuth.getInstance().signOut();

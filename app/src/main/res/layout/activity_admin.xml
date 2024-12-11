@@ -55,6 +55,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:id="@+id/btnRegisterVolunteer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register Volunteer"
+        android:onClick="registerVolunteer"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/btnDonationDrive"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnViewVolunteers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Volunteers"
+        android:onClick="viewVolunteers"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/btnRegisterVolunteer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
 
     <!-- Button for Logout -->
     <Button
@@ -64,7 +87,7 @@
         android:text="Logout"
         android:onClick="logoutAdmin"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/btnDonationDrive"
+        app:layout_constraintTop_toBottomOf="@id/btnViewVolunteers"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

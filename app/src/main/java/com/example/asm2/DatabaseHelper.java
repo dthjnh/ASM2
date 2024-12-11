@@ -113,6 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
     // Donation Sites Methods
 
     public boolean insertDonationSite(String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
