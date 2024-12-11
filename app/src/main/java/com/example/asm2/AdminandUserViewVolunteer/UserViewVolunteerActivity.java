@@ -1,34 +1,30 @@
-package com.example.asm2;
+package com.example.asm2.AdminandUserViewVolunteer;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class ViewVolunteerActivity extends AppCompatActivity {
+import com.example.asm2.R;
+
+public class UserViewVolunteerActivity extends AppCompatActivity {
 
     private ListView lvVolunteers;
     private VolunteerDatabaseHelper volunteerDatabaseHelper;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_volunteers);
+        setContentView(R.layout.activity_user_view_volunteer);
 
         lvVolunteers = findViewById(R.id.lvVolunteers);
         volunteerDatabaseHelper = new VolunteerDatabaseHelper(this);
 
         loadVolunteers();
-
-        lvVolunteers.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent = new Intent(ViewVolunteerActivity.this, EditVolunteerActivity.class);
-            intent.putExtra("VOLUNTEER_ID", id);
-            startActivity(intent);
-        });
     }
 
     private void loadVolunteers() {

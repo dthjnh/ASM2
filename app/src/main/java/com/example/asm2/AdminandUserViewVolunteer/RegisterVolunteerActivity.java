@@ -1,4 +1,4 @@
-package com.example.asm2;
+package com.example.asm2.AdminandUserViewVolunteer;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -6,6 +6,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.asm2.R;
 
 public class RegisterVolunteerActivity extends AppCompatActivity {
 

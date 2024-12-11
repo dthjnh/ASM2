@@ -53,11 +53,11 @@
         <activity android:name=".DonorRegister.ViewDonorsActivity" />
         <activity android:name=".DonationDrive.DonationDriveActivity" />
         <activity android:name=".DonorRegister.EditDonorActivity" />
-        <activity android:name=".AddDonationSiteUserActivity" />
-        <activity android:name=".EditVolunteerActivity" />
-        <activity android:name=".ViewVolunteerActivity" />
-        <activity android:name=".RegisterVolunteerActivity" />
-        <activity android:name=".UserViewVolunteerActivity"/>
+        <activity android:name=".AddDonationSiteUser.AddDonationSiteUserActivity" />
+        <activity android:name=".AdminandUserViewVolunteer.EditVolunteerActivity" />
+        <activity android:name=".AdminandUserViewVolunteer.ViewVolunteerActivity" />
+        <activity android:name=".AdminandUserViewVolunteer.RegisterVolunteerActivity" />
+        <activity android:name=".AdminandUserViewVolunteer.UserViewVolunteerActivity"/>
     </application>
 
 </manifest>

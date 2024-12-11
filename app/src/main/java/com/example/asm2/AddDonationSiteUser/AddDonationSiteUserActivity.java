@@ -1,4 +1,4 @@
-package com.example.asm2;
+package com.example.asm2.AddDonationSiteUser;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -9,7 +9,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asm2.AddDonationEditandDelete.DonationSiteListActivity;
+import com.example.asm2.DatabaseHelper;
 import com.example.asm2.MapView.MapsActivity;
+import com.example.asm2.R;
 
 public class AddDonationSiteUserActivity extends AppCompatActivity {
 
