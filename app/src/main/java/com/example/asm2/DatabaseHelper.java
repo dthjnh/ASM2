@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database constants
     private static final String DATABASE_NAME = "BloodDonation.db";
-    private static final int DATABASE_VERSION = 4; // Incremented for donation drive table
+    private static final int DATABASE_VERSION = 6;
 
     // Donation sites table
     public static final String TABLE_NAME = "donation_sites";
@@ -25,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BLOOD_TYPES = "blood_types";
     public static final String COLUMN_LATITUDE = "latitude";
     public static final String COLUMN_LONGITUDE = "longitude";
+    public static final String COLUMN_CREATOR_TYPE = "creator_type";
 
     // Donors table
     public static final String DONORS_TABLE_NAME = "donors";
@@ -52,7 +53,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_HOURS + " TEXT NOT NULL, " +
                 COLUMN_BLOOD_TYPES + " TEXT NOT NULL, " +
                 COLUMN_LATITUDE + " REAL, " +
-                COLUMN_LONGITUDE + " REAL)";
+                COLUMN_LONGITUDE + " REAL, " +
+                COLUMN_CREATOR_TYPE + " TEXT NOT NULL)";
         db.execSQL(createDonationSitesTable);
 
         // Create donors table
@@ -78,6 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 2) {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_LATITUDE + " REAL");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_LONGITUDE + " REAL");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_CREATOR_TYPE + " TEXT;");
         }
         if (oldVersion < 3) {
             String createDonorsTable = "CREATE TABLE " + DONORS_TABLE_NAME + " (" +
@@ -96,11 +99,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY (" + COLUMN_DONOR_ID + ") REFERENCES " + DONORS_TABLE_NAME + "(" + DONOR_COLUMN_ID + "))";
             db.execSQL(createDonationDriveTable);
         }
+        if (oldVersion < 5) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_CREATOR_TYPE + " TEXT NOT NULL DEFAULT 'admin'");
+        }
     }
 
     // Donation Sites Methods
 
-    public boolean insertDonationSite(String address, String hours, String bloodTypes, double latitude, double longitude) {
+    public boolean insertDonationSite(String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ADDRESS, address);
@@ -108,12 +114,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_BLOOD_TYPES, bloodTypes);
         values.put(COLUMN_LATITUDE, latitude);
         values.put(COLUMN_LONGITUDE, longitude);
+        values.put(COLUMN_CREATOR_TYPE, creatorType);
 
         long result = db.insert(TABLE_NAME, null, values);
         return result != -1;
     }
 
-    public boolean updateDonationSite(int id, String address, String hours, String bloodTypes, double latitude, double longitude) {
+    public boolean updateDonationSite(int id, String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ADDRESS, address);
@@ -121,6 +128,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_BLOOD_TYPES, bloodTypes);
         values.put(COLUMN_LATITUDE, latitude);
         values.put(COLUMN_LONGITUDE, longitude);
+        values.put(COLUMN_CREATOR_TYPE, creatorType);
 
         int result = db.update(TABLE_NAME, values, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
         return result > 0;
@@ -145,7 +153,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String bloodTypes = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BLOOD_TYPES));
                 double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LATITUDE));
                 double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LONGITUDE));
-                donationSites.add(new DonationSite(id, address, hours, bloodTypes, latitude, longitude));
+                String creatorType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CREATOR_TYPE));
+                donationSites.add(new DonationSite(id, address, hours, bloodTypes, latitude, longitude, creatorType));
             }
             cursor.close();
         }
@@ -162,8 +171,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String bloodTypes = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BLOOD_TYPES));
             double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LATITUDE));
             double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LONGITUDE));
+            String creatorType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CREATOR_TYPE));
             cursor.close();
-            return new DonationSite(id, address, hours, bloodTypes, latitude, longitude);
+            return new DonationSite(id, address, hours, bloodTypes, latitude, longitude, creatorType);
         }
         return null;
     }
@@ -181,9 +191,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public boolean updateDonor(int donorId, String name, String contact, String siteAddress) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DONOR_COLUMN_NAME, name);
+        values.put(DONOR_COLUMN_CONTACT, contact);
+        values.put(DONOR_COLUMN_SITE_ADDRESS, siteAddress);
+
+        int rowsAffected = db.update(DONORS_TABLE_NAME, values, "id = ?", new String[]{String.valueOf(donorId)});
+        return rowsAffected > 0; // Return true if update was successful
+    }
+
     public Cursor getAllDonors() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT id AS _id, name, contact, site_address FROM " + DONORS_TABLE_NAME, null);
+    }
+
+    public Cursor getDonorById(int donorId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT * FROM " + DONORS_TABLE_NAME + " WHERE id = ?",
+                new String[]{String.valueOf(donorId)}
+        );
+    }
+
+    public boolean deleteDonor(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsDeleted = db.delete(DONORS_TABLE_NAME, "id = ?", new String[]{String.valueOf(id)});
+        return rowsDeleted > 0; // Return true if the donor was successfully deleted
     }
 
     // Donation Drive Methods
@@ -199,8 +234,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public Cursor getDonationDriveByDonorId(int donorId) {
+    public Cursor getDonationData() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + DONATION_DRIVE_TABLE + " WHERE " + COLUMN_DONOR_ID + "=?", new String[]{String.valueOf(donorId)});
+        return db.rawQuery("SELECT id AS _id, donor_name, blood_amount, blood_types FROM donations", null);
+    }
+
+    // Method to delete a donation record by ID
+    public boolean deleteDonationRecord(int donorId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsDeleted = db.delete(DONATION_DRIVE_TABLE, COLUMN_DONOR_ID + "=?", new String[]{String.valueOf(donorId)});
+        return rowsDeleted > 0; // Return true if deletion was successful
     }
 }

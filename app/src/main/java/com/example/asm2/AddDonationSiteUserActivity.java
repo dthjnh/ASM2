@@ -1,4 +1,4 @@
-package com.example.asm2.AddDonationEditandDelete;
+package com.example.asm2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -8,22 +8,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.asm2.Admin;
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.AddDonationEditandDelete.DonationSiteListActivity;
 import com.example.asm2.MapView.MapsActivity;
-import com.example.asm2.R;
 
-public class AddDonationSiteActivity extends AppCompatActivity {
+public class AddDonationSiteUserActivity extends AppCompatActivity {
 
     private EditText editAddress, editHours, editBloodTypes, editLatitude, editLongitude;
-    private Button btnSave, btnListDonationSites, btnViewOnMap, btnBackToAdmin;
+    private Button btnSave, btnViewOnMap, btnListDonationSites;
     private DatabaseHelper dbHelper;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_donation_site);
+        setContentView(R.layout.activity_add_donation_site_user);
 
         editAddress = findViewById(R.id.editAddress);
         editHours = findViewById(R.id.editHours);
@@ -31,22 +29,17 @@ public class AddDonationSiteActivity extends AppCompatActivity {
         editLatitude = findViewById(R.id.editLatitude);
         editLongitude = findViewById(R.id.editLongitude);
         btnSave = findViewById(R.id.btnSave);
-        btnListDonationSites = findViewById(R.id.btnListDonationSites);
         btnViewOnMap = findViewById(R.id.btnViewOnMap);
-        btnBackToAdmin = findViewById(R.id.btnBackToAdmin);
-
-        btnBackToAdmin.setOnClickListener(v -> {
-            startActivity(new Intent(AddDonationSiteActivity.this, Admin.class));
-        });
+        btnListDonationSites = findViewById(R.id.btnListDonationSites);
 
         dbHelper = new DatabaseHelper(this);
 
         btnViewOnMap.setOnClickListener(v -> {
-            startActivity(new Intent(AddDonationSiteActivity.this, MapsActivity.class));
+            startActivity(new Intent(AddDonationSiteUserActivity.this, MapsActivity.class));
         });
 
         btnListDonationSites.setOnClickListener(v -> {
-            startActivity(new Intent(AddDonationSiteActivity.this, DonationSiteListActivity.class));
+            startActivity(new Intent(AddDonationSiteUserActivity.this, DonationSiteListActivity.class));
         });
 
         btnSave.setOnClickListener(v -> {
@@ -57,7 +50,7 @@ public class AddDonationSiteActivity extends AppCompatActivity {
             String longitudeStr = editLongitude.getText().toString().trim();
 
             if (address.isEmpty() || hours.isEmpty() || bloodTypes.isEmpty() || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
-                Toast.makeText(AddDonationSiteActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddDonationSiteUserActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -65,15 +58,19 @@ public class AddDonationSiteActivity extends AppCompatActivity {
                 double latitude = Double.parseDouble(latitudeStr);
                 double longitude = Double.parseDouble(longitudeStr);
 
-                boolean success = dbHelper.insertDonationSite(address, hours, bloodTypes, latitude, longitude, "admin");
+                boolean success = dbHelper.insertDonationSite(address, hours, bloodTypes, latitude, longitude, "user");
                 if (success) {
-                    Toast.makeText(AddDonationSiteActivity.this, "Donation site added successfully", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(AddDonationSiteActivity.this, DonationSiteListActivity.class));
+                    Toast.makeText(AddDonationSiteUserActivity.this, "Donation site added successfully", Toast.LENGTH_SHORT).show();
+                    editAddress.setText("");
+                    editHours.setText("");
+                    editBloodTypes.setText("");
+                    editLatitude.setText("");
+                    editLongitude.setText("");
                 } else {
-                    Toast.makeText(AddDonationSiteActivity.this, "Error adding site", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddDonationSiteUserActivity.this, "Error adding site", Toast.LENGTH_SHORT).show();
                 }
             } catch (NumberFormatException e) {
-                Toast.makeText(AddDonationSiteActivity.this, "Invalid latitude or longitude", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddDonationSiteUserActivity.this, "Invalid latitude or longitude", Toast.LENGTH_SHORT).show();
             }
         });
     }

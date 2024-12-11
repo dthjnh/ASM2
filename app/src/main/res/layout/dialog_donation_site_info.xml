@@ -30,15 +30,37 @@
         android:text="Blood Types: O+, A+"
         android:paddingBottom="16dp" />
 
-    <!-- Register Button -->
-    <Button
-        android:id="@+id/btnDialogRegister"
+    <!-- Buttons Layout -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register as Donor"
-        android:backgroundTint="#6200EE"
-        android:textColor="#FFFFFF" />
+        android:orientation="horizontal"
+        android:gravity="center">
 
+        <!-- Register Button -->
+        <Button
+            android:id="@+id/btnDialogRegister"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Register as Donor"
+            android:backgroundTint="#6200EE"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Find Route Button -->
+        <Button
+            android:id="@+id/btnDialogFindRoute"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Find a Route"
+            android:backgroundTint="#008577"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Close Button -->
     <Button
         android:id="@+id/btnDialogClose"
         android:layout_width="match_parent"
@@ -46,5 +68,5 @@
         android:text="Close"
         android:backgroundTint="#DDDDDD"
         android:textColor="#000000"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="16dp" />
 </LinearLayout>

@@ -37,16 +37,18 @@ public class DonationSiteAdapter extends ArrayAdapter<DonationSite> {
         TextView txtAddress = convertView.findViewById(R.id.txtAddress);
         TextView txtHours = convertView.findViewById(R.id.txtHours);
         TextView txtBloodTypes = convertView.findViewById(R.id.txtBloodTypes);
-        TextView txtLatitude = convertView.findViewById(R.id.txtLatitude);  // New TextView for latitude
-        TextView txtLongitude = convertView.findViewById(R.id.txtLongitude); // New TextView for longitude
+        TextView txtLatitude = convertView.findViewById(R.id.txtLatitude);
+        TextView txtLongitude = convertView.findViewById(R.id.txtLongitude);
+        TextView txtCreatorType = convertView.findViewById(R.id.txtCreatorType);
         Button btnEdit = convertView.findViewById(R.id.btnEdit);
         Button btnDelete = convertView.findViewById(R.id.btnDelete);
 
         txtAddress.setText(site.getAddress());
         txtHours.setText(site.getHours());
         txtBloodTypes.setText(site.getBloodTypes());
-        txtLatitude.setText("Lat: " + site.getLatitude());  // Display latitude
-        txtLongitude.setText("Lng: " + site.getLongitude()); // Display longitude
+        txtLatitude.setText("Lat: " + site.getLatitude());
+        txtLongitude.setText("Lng: " + site.getLongitude());
+        txtCreatorType.setText("Created by: " + site.getCreatorType());
 
         // Handle Edit button
         btnEdit.setOnClickListener(v -> {

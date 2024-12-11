@@ -6,36 +6,58 @@
     android:background="#ffffff"
     android:elevation="2dp">
 
+    <!-- Address -->
     <TextView
         android:id="@+id/txtAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Address" />
+        android:text="Address"
+        android:textStyle="bold"
+        android:textSize="16sp" />
 
+    <!-- Hours -->
     <TextView
         android:id="@+id/txtHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hours" />
+        android:text="Hours"
+        android:paddingTop="4dp" />
 
+    <!-- Blood Types -->
     <TextView
         android:id="@+id/txtBloodTypes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Blood Types" />
+        android:text="Blood Types"
+        android:paddingTop="4dp" />
 
+    <!-- Latitude -->
     <TextView
         android:id="@+id/txtLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Latitude" />
+        android:text="Latitude"
+        android:paddingTop="4dp" />
 
+    <!-- Longitude -->
     <TextView
         android:id="@+id/txtLongitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Longitude" />
+        android:text="Longitude"
+        android:paddingTop="4dp" />
 
+    <!-- Creator Type -->
+    <TextView
+        android:id="@+id/txtCreatorType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Created by: Admin/User"
+        android:textStyle="italic"
+        android:paddingTop="8dp"
+        android:textColor="#616161" />
+
+    <!-- Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

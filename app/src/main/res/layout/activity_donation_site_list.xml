@@ -27,15 +27,4 @@
         android:padding="8dp" />
 
 
-    <Button
-        android:id="@+id/btnBackToAdmin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/purple_500"
-        android:padding="12dp"
-        android:text="Back to Add Donation"
-        android:textColor="#ffffff"
-        android:textSize="16sp" />
 </LinearLayout>

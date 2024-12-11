@@ -6,6 +6,8 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.asm2.AddDonationEditandDelete.AddDonationSiteActivity;
+import com.example.asm2.DonorRegister.ViewDonorsActivity;
 import com.example.asm2.Login.SignIn;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -17,9 +19,18 @@ public class UserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user);
 
     }
+
+    public void addDonationSite(View view) {
+        startActivity(new Intent(UserActivity.this, AddDonationSiteUserActivity.class));
+    }
+
+    public void viewDonors(View view) {
+        startActivity(new Intent(UserActivity.this, ViewDonorsActivity.class));
+    }
+
     public void logoutUser(View view) {
         FirebaseAuth.getInstance().signOut(); // Sign out from Firebase
-        startActivity(new Intent(UserActivity.this, SignIn.class)); // Redirect to SignIn activity
+        startActivity(new Intent(UserActivity.this, SignIn.class));
         finish(); // Close the Admin activity
     }
 }

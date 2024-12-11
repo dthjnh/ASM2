@@ -18,7 +18,6 @@
         android:theme="@style/Theme.ASM2"
         tools:targetApi="31">
 
-
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -49,10 +48,12 @@
         <activity android:name=".AddDonationEditandDelete.AddDonationSiteActivity" />
         <activity android:name=".AddDonationEditandDelete.DonationSiteListActivity" />
         <activity android:name=".AddDonationEditandDelete.EditDonationSiteActivity" />
-        <activity android:name=".DonorRegister.MapsActivity" />
+        <activity android:name=".MapView.MapsActivity" />
         <activity android:name=".DonorRegister.RegisterDonorActivity" />
         <activity android:name=".DonorRegister.ViewDonorsActivity" />
-        <activity android:name=".DonationDriveActivity"/>
+        <activity android:name=".DonationDrive.DonationDriveActivity" />
+        <activity android:name=".DonorRegister.EditDonorActivity" />
+        <activity android:name=".AddDonationSiteUserActivity"/>
     </application>
 
 </manifest>

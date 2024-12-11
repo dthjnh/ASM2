@@ -20,7 +20,7 @@
         android:id="@+id/editBloodTypes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Blood Types" />
+        android:hint="Blood Types Require" />
 
     <EditText
         android:id="@+id/editLatitude"

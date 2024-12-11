@@ -17,7 +17,6 @@ public class DonationSiteListActivity extends AppCompatActivity {
 
     private ListView listView;
     private DatabaseHelper dbHelper;
-    private Button btnBackToAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +30,6 @@ public class DonationSiteListActivity extends AppCompatActivity {
         DonationSiteAdapter adapter = new DonationSiteAdapter(this, donationSites);
         listView.setAdapter(adapter);
 
-        btnBackToAdmin = findViewById(R.id.btnBackToAdmin);
-        btnBackToAdmin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DonationSiteListActivity.this, AddDonationSiteActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
     }
 
     @Override
