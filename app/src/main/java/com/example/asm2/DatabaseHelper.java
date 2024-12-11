@@ -104,6 +104,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Handle database downgrade
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DONORS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DONATION_DRIVE_TABLE);
+        onCreate(db);
+    }
+
     // Donation Sites Methods
 
     public boolean insertDonationSite(String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
