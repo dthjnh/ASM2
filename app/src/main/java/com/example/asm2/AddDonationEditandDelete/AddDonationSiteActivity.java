@@ -68,7 +68,13 @@ public class AddDonationSiteActivity extends AppCompatActivity {
                 boolean success = dbHelper.insertDonationSite(address, hours, bloodTypes, latitude, longitude, "admin");
                 if (success) {
                     Toast.makeText(AddDonationSiteActivity.this, "Donation site added successfully", Toast.LENGTH_SHORT).show();
+                    editAddress.setText("");
+                    editHours.setText("");
+                    editBloodTypes.setText("");
+                    editLatitude.setText("");
+                    editLongitude.setText("");
                     startActivity(new Intent(AddDonationSiteActivity.this, DonationSiteListActivity.class));
+
                 } else {
                     Toast.makeText(AddDonationSiteActivity.this, "Error adding site", Toast.LENGTH_SHORT).show();
                 }
