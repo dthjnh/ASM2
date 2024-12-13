@@ -12,17 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.Database.DonationSitesDatabaseHelper;
 import com.example.asm2.R;
 
 import java.util.List;
 
 public class DonationSiteAdapter extends ArrayAdapter<DonationSite> {
-    private DatabaseHelper dbHelper;
+    private DonationSitesDatabaseHelper dbHelper;
 
     public DonationSiteAdapter(Context context, List<DonationSite> donationSites) {
         super(context, 0, donationSites);
-        dbHelper = new DatabaseHelper(context);
+        dbHelper = new DonationSitesDatabaseHelper(context);
     }
 
     @NonNull

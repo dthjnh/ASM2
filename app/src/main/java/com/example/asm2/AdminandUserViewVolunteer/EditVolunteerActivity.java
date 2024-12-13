@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.asm2.Database.VolunteerDatabaseHelper;
 import com.example.asm2.R;
 
 public class EditVolunteerActivity extends AppCompatActivity {

@@ -2,26 +2,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="12dp"
     android:background="#ffffff"
-    android:elevation="2dp">
+    android:elevation="4dp"
+    android:layout_marginBottom="8dp">
 
-    <!-- Address -->
     <TextView
         android:id="@+id/txtAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Address"
         android:textStyle="bold"
-        android:textSize="16sp" />
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:paddingBottom="4dp" />
 
-    <!-- Hours -->
     <TextView
         android:id="@+id/txtHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hours"
-        android:paddingTop="4dp" />
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:paddingBottom="4dp" />
 
     <!-- Blood Types -->
     <TextView
@@ -29,35 +32,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Blood Types"
-        android:paddingTop="4dp" />
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:paddingBottom="4dp" />
 
-    <!-- Latitude -->
     <TextView
         android:id="@+id/txtLatitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Latitude"
-        android:paddingTop="4dp" />
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:paddingBottom="4dp" />
 
-    <!-- Longitude -->
     <TextView
         android:id="@+id/txtLongitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Longitude"
-        android:paddingTop="4dp" />
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:paddingBottom="4dp" />
 
-    <!-- Creator Type -->
     <TextView
         android:id="@+id/txtCreatorType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Created by: Admin/User"
         android:textStyle="italic"
-        android:paddingTop="8dp"
-        android:textColor="#616161" />
+        android:textSize="14sp"
+        android:textColor="#757575"
+        android:paddingBottom="8dp" />
 
-    <!-- Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,6 +76,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit"
+            android:backgroundTint="#6200EE"
+            android:textColor="#FFFFFF"
             android:layout_marginEnd="8dp" />
 
         <Button
@@ -77,6 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete"
-            android:textColor="#FF0000" />
+            android:backgroundTint="#FF0000"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </LinearLayout>

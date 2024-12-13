@@ -2,42 +2,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#f8f9fa">
 
     <EditText
         android:id="@+id/editAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Address"
-        android:inputType="text" />
+        android:inputType="text"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/editHours"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Opening Hours"
-        android:inputType="text" />
+        android:inputType="text"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/editBloodTypes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Required Blood Types"
-        android:inputType="text" />
+        android:inputType="text"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/editLatitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Latitude"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/editLongitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Longitude"
-        android:inputType="numberDecimal" />
+        android:inputType="numberDecimal"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp" />
 
     <Button
         android:id="@+id/btnSave"
@@ -45,13 +71,21 @@
         android:layout_height="wrap_content"
         android:text="Save Donation Site"
         android:backgroundTint="#6200EE"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnListDonationSites"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="List Donation Sites" />
+        android:text="List Donation Sites"
+        android:backgroundTint="#FF9800"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnViewOnMap"
@@ -60,5 +94,6 @@
         android:text="View All Sites on Map"
         android:backgroundTint="#03DAC5"
         android:textColor="#FFFFFF"
-        android:layout_marginTop="8dp" />
+        android:textStyle="bold"
+        android:padding="12dp" />
 </LinearLayout>

@@ -12,13 +12,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.asm2.Admin;
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.Database.DonorsDatabaseHelper;
 import com.example.asm2.R;
 
 public class ViewDonorsActivity extends AppCompatActivity {
 
-    private DatabaseHelper dbHelper;
+    private DonorsDatabaseHelper dbHelper;
     private ListView listViewDonors;
 
     @Override
@@ -26,7 +25,7 @@ public class ViewDonorsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_donors);
 
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new DonorsDatabaseHelper(this);
         listViewDonors = findViewById(R.id.listViewDonors);
 
         loadDonors();

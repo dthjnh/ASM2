@@ -7,14 +7,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.asm2.DatabaseHelper;
+
+import com.example.asm2.Database.DonorsDatabaseHelper;
 import com.example.asm2.R;
 
 public class EditDonorActivity extends AppCompatActivity {
 
     private EditText editName, editContact, editSiteAddress;
     private Button btnSave;
-    private DatabaseHelper dbHelper;
+    private DonorsDatabaseHelper dbHelper;
     private int donorId;
 
     @Override
@@ -27,7 +28,7 @@ public class EditDonorActivity extends AppCompatActivity {
         editSiteAddress = findViewById(R.id.editSiteAddress);
         btnSave = findViewById(R.id.btnSave);
 
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new DonorsDatabaseHelper(this);
 
         // Get donor ID from the intent
         donorId = getIntent().getIntExtra("donor_id", -1);
@@ -44,9 +45,9 @@ public class EditDonorActivity extends AppCompatActivity {
         Cursor cursor = dbHelper.getDonorById(donorId);
 
         if (cursor != null && cursor.moveToFirst()) {
-            editName.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DONOR_COLUMN_NAME)));
-            editContact.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DONOR_COLUMN_CONTACT)));
-            editSiteAddress.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.DONOR_COLUMN_SITE_ADDRESS)));
+            editName.setText(cursor.getString(cursor.getColumnIndex(DonorsDatabaseHelper.COLUMN_NAME)));
+            editContact.setText(cursor.getString(cursor.getColumnIndex(DonorsDatabaseHelper.COLUMN_CONTACT)));
+            editSiteAddress.setText(cursor.getString(cursor.getColumnIndex(DonorsDatabaseHelper.COLUMN_SITE_ADDRESS)));
             cursor.close();
         } else {
             Toast.makeText(this, "Failed to load donor details", Toast.LENGTH_SHORT).show();
@@ -67,6 +68,9 @@ public class EditDonorActivity extends AppCompatActivity {
         boolean success = dbHelper.updateDonor(donorId, name, contact, siteAddress);
         if (success) {
             Toast.makeText(this, "Donor details updated successfully", Toast.LENGTH_SHORT).show();
+            editName.setText("");
+            editContact.setText("");
+            editSiteAddress.setText("");
             finish(); // Close the activity after saving
         } else {
             Toast.makeText(this, "Failed to update donor details", Toast.LENGTH_SHORT).show();

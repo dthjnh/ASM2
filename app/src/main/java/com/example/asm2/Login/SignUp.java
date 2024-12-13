@@ -77,8 +77,10 @@ public class SignUp extends AppCompatActivity {
                             userInfo.put("Phone", editPhone.getText().toString());
                             userInfo.put("DateOfBirth", editDateofBirth.getText().toString());
 
-                            // Specify user role
-                            if (editEmail.getText().toString().endsWith("@admin.com")) {
+                            // Assign roles
+                            if (editEmail.getText().toString().endsWith("@super.com")) {
+                                userInfo.put("isSuperUser", "1"); // Super User
+                            } else if (editEmail.getText().toString().endsWith("@admin.com")) {
                                 userInfo.put("isAdmin", "1"); // Admin
                             } else {
                                 userInfo.put("isUser", "1"); // Regular User

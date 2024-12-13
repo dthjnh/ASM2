@@ -16,11 +16,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asm2.AddDonationEditandDelete.DonationSite;
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.Database.DonationSitesDatabaseHelper;
 import com.example.asm2.DonorRegister.RegisterDonorActivity;
 import com.example.asm2.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -51,8 +52,9 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private DatabaseHelper dbHelper;
+    private DonationSitesDatabaseHelper dbHelper;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private SearchView mapSearch;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     @Override
@@ -60,15 +62,80 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        // Initialize the database helper and location provider
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new DonationSitesDatabaseHelper(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        mapSearch = findViewById(R.id.mapSearch);
+
+        mapSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterDonationSites(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterDonationSites(newText);
+                return false;
+            }
+        });
 
         // Obtain the SupportMapFragment and set up the map
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
+        }
+    }
+
+    private void filterDonationSites(String query) {
+        if (mMap == null) return;
+
+        // Clear existing markers
+        mMap.clear();
+
+        if (query == null || query.trim().isEmpty()) {
+            // Show all donation sites when the query is empty
+            List<DonationSite> allSites = dbHelper.getAllDonationSites();
+
+            for (DonationSite site : allSites) {
+                LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
+                mMap.addMarker(new MarkerOptions()
+                        .position(location)
+                        .title(site.getAddress())
+                        .snippet("Opening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
+                        .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
+            }
+
+            if (!allSites.isEmpty()) {
+                LatLng firstLocation = new LatLng(allSites.get(0).getLatitude(), allSites.get(0).getLongitude());
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15));
+                Toast.makeText(this, "Showing all donation sites.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "No donation sites available.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Filter donation sites based on the query
+            List<DonationSite> filteredSites = dbHelper.getDonationSitesByBloodType(query.trim());
+
+            if (!filteredSites.isEmpty()) {
+                for (DonationSite site : filteredSites) {
+                    LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
+                    mMap.addMarker(new MarkerOptions()
+                            .position(location)
+                            .title(site.getAddress())
+                            .snippet("Opening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
+                            .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
+                }
+
+                // Move the camera to the first matching location and zoom in
+                LatLng firstLocation = new LatLng(filteredSites.get(0).getLatitude(), filteredSites.get(0).getLongitude());
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15));
+                Toast.makeText(this, "Found " + filteredSites.size() + " site(s) matching: " + query, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "No results found for: " + query, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -91,6 +158,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             showDonationSiteDialog(marker);
             return true;
         });
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15)); // Zoom level 15
+                        } else {
+                            Toast.makeText(this, "Unable to fetch current location", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
 
 
 //        mMap.setOnMarkerClickListener(marker -> {
@@ -323,11 +407,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
-    public void backToAdmin(View view) {
-        finish();
-    }
-
 
     public void getPosition(View view) {
         getCurrentPosition(view);

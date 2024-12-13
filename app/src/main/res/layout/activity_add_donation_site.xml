@@ -2,59 +2,104 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#f8f9fa">
 
     <EditText
         android:id="@+id/editAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Address" />
+        android:hint="Address"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="#000"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/editHours"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Hours" />
+        android:hint="Hours"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="#000"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/editBloodTypes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Blood Types Require" />
+        android:hint="Blood Types Required"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="#000"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/editLatitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Latitude" />
+        android:hint="Latitude"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="#000"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/editLongitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Longitude" />
+        android:hint="Longitude"
+        android:background="@drawable/edit_text_background"
+        android:padding="12dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="#000"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save" />
+        android:text="Save"
+        android:backgroundTint="#007bff"
+        android:textColor="#fff"
+        android:padding="12dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnListDonationSites"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="List Donation Sites" />
+        android:text="List Donation Sites"
+        android:backgroundTint="#6c757d"
+        android:textColor="#fff"
+        android:padding="12dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnViewOnMap"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View on Map" />
+        android:text="View on Map"
+        android:backgroundTint="#28a745"
+        android:textColor="#fff"
+        android:padding="12dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="12dp" />
 
     <Button
         android:id="@+id/btnBackToAdmin"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Back to Admin" />
+        android:text="Back to Admin"
+        android:backgroundTint="#dc3545"
+        android:textColor="#fff"
+        android:padding="12dp"
+        android:textStyle="bold" />
 </LinearLayout>

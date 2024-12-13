@@ -1,7 +1,6 @@
 package com.example.asm2.DonationDrive;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +15,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.asm2.Admin;
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.Database.DonationDriveDatabaseHelper;
+import com.example.asm2.Database.DonorsDatabaseHelper;
 import com.example.asm2.R;
 
 import java.util.ArrayList;
@@ -29,14 +28,16 @@ public class DonationDriveActivity extends AppCompatActivity {
     private EditText editBloodAmount, editBloodTypes;
     private Button btnSubmitDonation;
     private TextView donationDetailsText;
-    private DatabaseHelper dbHelper;
+    private DonationDriveDatabaseHelper donationDriveDbHelper;
+    private DonorsDatabaseHelper donorsDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donation_drive);
 
-        dbHelper = new DatabaseHelper(this);
+        donationDriveDbHelper = new DonationDriveDatabaseHelper(this);
+        donorsDbHelper = new DonorsDatabaseHelper(this);
 
         donorNameSpinner = findViewById(R.id.donorNameSpinner);
         editBloodAmount = findViewById(R.id.editBloodAmount);
@@ -58,11 +59,11 @@ public class DonationDriveActivity extends AppCompatActivity {
 
     // Load donor names from the database and display them in the spinner
     private void loadDonors() {
-        Cursor cursor = dbHelper.getAllDonors();
+        Cursor cursor = donorsDbHelper.getAllDonors();
         if (cursor != null && cursor.moveToFirst()) {
             List<String> donorNames = new ArrayList<>();
             do {
-                @SuppressLint("Range") String donorName = cursor.getString(cursor.getColumnIndex(DatabaseHelper.DONOR_COLUMN_NAME));
+                @SuppressLint("Range") String donorName = cursor.getString(cursor.getColumnIndex(DonorsDatabaseHelper.COLUMN_NAME));
                 donorNames.add(donorName);
             } while (cursor.moveToNext());
             cursor.close();
@@ -77,43 +78,43 @@ public class DonationDriveActivity extends AppCompatActivity {
     // Submit donation data to the database
     @SuppressLint("Range")
     private void submitDonationData() {
-    String selectedDonorName = donorNameSpinner.getSelectedItem().toString();
-    String bloodAmount = editBloodAmount.getText().toString();
-    String bloodTypes = editBloodTypes.getText().toString();
+        String selectedDonorName = donorNameSpinner.getSelectedItem().toString();
+        String bloodAmount = editBloodAmount.getText().toString();
+        String bloodTypes = editBloodTypes.getText().toString();
 
-    if (bloodAmount.isEmpty() || bloodTypes.isEmpty()) {
-        Toast.makeText(DonationDriveActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-        return;
-    }
+        if (bloodAmount.isEmpty() || bloodTypes.isEmpty()) {
+            Toast.makeText(DonationDriveActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-    Cursor cursor = dbHelper.getAllDonors();
-    int donorId = -1;
-    if (cursor != null && cursor.moveToFirst()) {
-        do {
-            @SuppressLint("Range") String donorName = cursor.getString(cursor.getColumnIndex(DatabaseHelper.DONOR_COLUMN_NAME));
-            if (donorName.equals(selectedDonorName)) {
-                donorId = cursor.getInt(cursor.getColumnIndex("_id"));
-                break;
-            }
-        } while (cursor.moveToNext());
-        cursor.close();
-    }
+        Cursor cursor = donorsDbHelper.getAllDonors();
+        int donorId = -1;
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String donorName = cursor.getString(cursor.getColumnIndex(DonorsDatabaseHelper.COLUMN_NAME));
+                if (donorName.equals(selectedDonorName)) {
+                    donorId = cursor.getInt(cursor.getColumnIndex("_id"));
+                    break;
+                }
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
 
-    if (donorId == -1) {
-        Toast.makeText(DonationDriveActivity.this, "Donor not found", Toast.LENGTH_SHORT).show();
-        return;
-    }
+        if (donorId == -1) {
+            Toast.makeText(DonationDriveActivity.this, "Donor not found", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-    boolean isInserted = dbHelper.insertDonationDrive(donorId, bloodAmount, bloodTypes);
-    if (isInserted) {
-        Toast.makeText(DonationDriveActivity.this, "Donation data submitted", Toast.LENGTH_SHORT).show();
-        editBloodAmount.setText("");
-        editBloodTypes.setText("");
-        displayDonationData(donorId);
-    } else {
-        Toast.makeText(DonationDriveActivity.this, "Failed to submit donation data", Toast.LENGTH_SHORT).show();
+        boolean isInserted = donationDriveDbHelper.insertDonationDrive(donorId, bloodAmount, bloodTypes);
+        if (isInserted) {
+            Toast.makeText(DonationDriveActivity.this, "Donation data submitted", Toast.LENGTH_SHORT).show();
+            editBloodAmount.setText("");
+            editBloodTypes.setText("");
+            displayDonationData(donorId);
+        } else {
+            Toast.makeText(DonationDriveActivity.this, "Failed to submit donation data", Toast.LENGTH_SHORT).show();
+        }
     }
-}
 
     // Display the donation details below the donor's name
     private void displayDonationData(int donorId) {
@@ -122,9 +123,9 @@ public class DonationDriveActivity extends AppCompatActivity {
         String donorContact = "";
         String donorSiteAddress = "";
 
-        Cursor donorCursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT name, contact, site_address FROM " + DatabaseHelper.DONORS_TABLE_NAME +
-                        " WHERE " + DatabaseHelper.DONOR_COLUMN_ID + " = ?",
+        Cursor donorCursor = donorsDbHelper.getReadableDatabase().rawQuery(
+                "SELECT name, contact, site_address FROM " + DonorsDatabaseHelper.TABLE_NAME +
+                        " WHERE " + DonorsDatabaseHelper.COLUMN_ID + " = ?",
                 new String[]{String.valueOf(donorId)}
         );
 
@@ -146,10 +147,10 @@ public class DonationDriveActivity extends AppCompatActivity {
         }
 
         // Fetch donation data for the selected donor
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT id, " + DatabaseHelper.COLUMN_BLOOD_AMOUNT + ", " + DatabaseHelper.COLUMN_DONATION_BLOOD_TYPES +
-                        " FROM " + DatabaseHelper.DONATION_DRIVE_TABLE +
-                        " WHERE " + DatabaseHelper.COLUMN_DONOR_ID + " = ? ORDER BY id DESC",
+        Cursor cursor = donationDriveDbHelper.getReadableDatabase().rawQuery(
+                "SELECT id, " + DonationDriveDatabaseHelper.COLUMN_BLOOD_AMOUNT + ", " + DonationDriveDatabaseHelper.COLUMN_BLOOD_TYPES +
+                        " FROM " + DonationDriveDatabaseHelper.TABLE_NAME +
+                        " WHERE " + DonationDriveDatabaseHelper.COLUMN_DONOR_ID + " = ? ORDER BY id DESC",
                 new String[]{String.valueOf(donorId)}
         );
 
@@ -168,8 +169,8 @@ public class DonationDriveActivity extends AppCompatActivity {
 
             do {
                 int recordIdIndex = cursor.getColumnIndex("id");
-                int bloodAmountIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_BLOOD_AMOUNT);
-                int bloodTypesIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_DONATION_BLOOD_TYPES);
+                int bloodAmountIndex = cursor.getColumnIndex(DonationDriveDatabaseHelper.COLUMN_BLOOD_AMOUNT);
+                int bloodTypesIndex = cursor.getColumnIndex(DonationDriveDatabaseHelper.COLUMN_BLOOD_TYPES);
 
                 // Ensure column indexes are valid
                 if (recordIdIndex != -1 && bloodAmountIndex != -1 && bloodTypesIndex != -1) {
@@ -211,8 +212,8 @@ public class DonationDriveActivity extends AppCompatActivity {
 
     // Method to delete all donation data for a specific donor
     private void deleteDonationData(int recordId, int donorId) {
-        int rowsDeleted = dbHelper.getWritableDatabase().delete(
-                DatabaseHelper.DONATION_DRIVE_TABLE,
+        int rowsDeleted = donationDriveDbHelper.getWritableDatabase().delete(
+                DonationDriveDatabaseHelper.TABLE_NAME,
                 "id = ?",
                 new String[]{String.valueOf(recordId)}
         );
@@ -229,10 +230,10 @@ public class DonationDriveActivity extends AppCompatActivity {
 
     private void showDeleteDialog(int donorId) {
         // Fetch donation records for the selected donor
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(
-                "SELECT id, " + DatabaseHelper.COLUMN_BLOOD_AMOUNT + ", " + DatabaseHelper.COLUMN_DONATION_BLOOD_TYPES +
-                        " FROM " + DatabaseHelper.DONATION_DRIVE_TABLE +
-                        " WHERE " + DatabaseHelper.COLUMN_DONOR_ID + " = ?",
+        Cursor cursor = donationDriveDbHelper.getReadableDatabase().rawQuery(
+                "SELECT id, " + DonationDriveDatabaseHelper.COLUMN_BLOOD_AMOUNT + ", " + DonationDriveDatabaseHelper.COLUMN_BLOOD_TYPES +
+                        " FROM " + DonationDriveDatabaseHelper.TABLE_NAME +
+                        " WHERE " + DonationDriveDatabaseHelper.COLUMN_DONOR_ID + " = ?",
                 new String[]{String.valueOf(donorId)}
         );
 
@@ -243,8 +244,8 @@ public class DonationDriveActivity extends AppCompatActivity {
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 @SuppressLint("Range") int recordId = cursor.getInt(cursor.getColumnIndex("id"));
-                @SuppressLint("Range") String bloodAmount = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_BLOOD_AMOUNT));
-                @SuppressLint("Range") String bloodTypes = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DONATION_BLOOD_TYPES));
+                @SuppressLint("Range") String bloodAmount = cursor.getString(cursor.getColumnIndex(DonationDriveDatabaseHelper.COLUMN_BLOOD_AMOUNT));
+                @SuppressLint("Range") String bloodTypes = cursor.getString(cursor.getColumnIndex(DonationDriveDatabaseHelper.COLUMN_BLOOD_TYPES));
 
                 records.add("Amount: " + bloodAmount + ", Blood Types: " + bloodTypes);
                 recordIds.add(recordId);
@@ -281,7 +282,4 @@ public class DonationDriveActivity extends AppCompatActivity {
                 .setNegativeButton("No", null)
                 .show();
     }
-
-
-
 }

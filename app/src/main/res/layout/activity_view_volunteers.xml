@@ -1,12 +1,33 @@
-<!-- res/layout/activity_view_volunteers.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#F9F9F9"
     android:padding="16dp">
 
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registered Volunteers"
+        android:textColor="#333333"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:padding="12dp" />
+
+    <!-- ListView -->
     <ListView
         android:id="@+id/lvVolunteers"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:background="#FFFFFF"
+        android:padding="8dp"
+        android:scrollbars="vertical" />
+
 </LinearLayout>

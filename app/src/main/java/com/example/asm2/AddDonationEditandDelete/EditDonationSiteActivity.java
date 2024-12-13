@@ -7,14 +7,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.Database.DonationSitesDatabaseHelper;
 import com.example.asm2.R;
 
 public class EditDonationSiteActivity extends AppCompatActivity {
 
     private EditText editAddress, editHours, editBloodTypes, editLatitude, editLongitude,editDescription;
     private Button btnSave;
-    private DatabaseHelper dbHelper;
+    private DonationSitesDatabaseHelper dbHelper;
     private int siteId;
 
     @SuppressLint("MissingInflatedId")
@@ -31,7 +31,7 @@ public class EditDonationSiteActivity extends AppCompatActivity {
         editDescription = findViewById(R.id.editDescription);
         btnSave = findViewById(R.id.btnSave);
 
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new DonationSitesDatabaseHelper(this);
 
         // Get the site ID passed from the adapter
         siteId = getIntent().getIntExtra("site_id", -1);

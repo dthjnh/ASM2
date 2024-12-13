@@ -1,26 +1,53 @@
-<!-- res/layout/activity_register_volunteer.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F9F9F9">
+
+    <TextView
+        android:id="@+id/tvRegisterVolunteer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register Volunteer"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp" />
 
     <EditText
         android:id="@+id/etVolunteerName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name" />
+        android:hint="Enter Volunteer Name"
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:textColor="#000000"
+        android:textColorHint="#888888"
+        android:layout_marginBottom="16dp" />
 
     <EditText
         android:id="@+id/etVolunteerPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Phone Number"
-        android:inputType="phone" />
+        android:hint="Enter Phone Number"
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:inputType="phone"
+        android:textColor="#000000"
+        android:textColorHint="#888888"
+        android:layout_marginBottom="24dp" />
 
     <Button
         android:id="@+id/btnSubmitVolunteer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:text="Submit"
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:elevation="4dp" />
 </LinearLayout>

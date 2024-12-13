@@ -57,7 +57,8 @@
         <activity android:name=".AdminandUserViewVolunteer.EditVolunteerActivity" />
         <activity android:name=".AdminandUserViewVolunteer.ViewVolunteerActivity" />
         <activity android:name=".AdminandUserViewVolunteer.RegisterVolunteerActivity" />
-        <activity android:name=".AdminandUserViewVolunteer.UserViewVolunteerActivity"/>
+        <activity android:name=".AdminandUserViewVolunteer.UserViewVolunteerActivity" />
+        <activity android:name=".SuperUserActivity"/>
     </application>
 
 </manifest>

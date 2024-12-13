@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asm2.Admin;
+import com.example.asm2.SuperUserActivity;
 import com.example.asm2.UserActivity;
 import com.example.asm2.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -87,17 +88,16 @@ public class SignIn extends AppCompatActivity {
         df.get().addOnSuccessListener(documentSnapshot -> {
             Log.d("TAG", "onSuccess: " + documentSnapshot.getData());
 
-            // Check if the user is admin
-            if (documentSnapshot.getString("isAdmin") != null) {
-                // User is admin
-                startActivity(new Intent(getApplicationContext(), Admin.class));
+            if (documentSnapshot.getString("isSuperUser") != null) {
+                startActivity(new Intent(getApplicationContext(), SuperUserActivity.class)); // Redirect to Super User
+                finish();
+            } else if (documentSnapshot.getString("isAdmin") != null) {
+                startActivity(new Intent(getApplicationContext(), Admin.class)); // Redirect to Admin
                 finish();
             } else if (documentSnapshot.getString("isUser") != null) {
-                // User is regular user
-                startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                startActivity(new Intent(getApplicationContext(), UserActivity.class)); // Redirect to User
                 finish();
             } else {
-                // Handle unexpected cases
                 Toast.makeText(SignIn.this, "Access level undefined!", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(e -> {

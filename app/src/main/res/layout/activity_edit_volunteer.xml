@@ -1,32 +1,52 @@
-<!-- res/layout/activity_edit_volunteer.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#f9f9f9"
     android:padding="16dp">
 
     <EditText
         android:id="@+id/etEditVolunteerName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name" />
+        android:hint="Name"
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_marginBottom="12dp" />
 
     <EditText
         android:id="@+id/etEditVolunteerPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone Number"
-        android:inputType="phone" />
+        android:background="@drawable/edittext_border"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:inputType="phone"
+        android:layout_marginBottom="24dp" />
 
     <Button
         android:id="@+id/btnUpdateVolunteer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update" />
+        android:text="Update Volunteer"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btnDeleteVolunteer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete" />
+        android:text="Delete Volunteer"
+        android:backgroundTint="#F44336"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
 </LinearLayout>

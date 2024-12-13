@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#f0f0f0"
+    android:background="#f9f9f9"
     android:padding="16dp">
 
     <TextView
@@ -10,21 +10,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Donation Sites"
-        android:textColor="#333333"
-        android:textSize="24sp"
+        android:textColor="#4CAF50"
+        android:textSize="26sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="12dp"
+        android:letterSpacing="0.1"
+        android:background="?attr/colorPrimary"
+        android:textColorHint="#FFFFFF"
+        android:paddingTop="20dp" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="#cccccc"
+        android:divider="#DDDDDD"
         android:dividerHeight="1dp"
         android:background="#ffffff"
-        android:padding="8dp" />
-
-
+        android:elevation="2dp"
+        android:padding="8dp"
+        android:clipToPadding="false" />
 </LinearLayout>

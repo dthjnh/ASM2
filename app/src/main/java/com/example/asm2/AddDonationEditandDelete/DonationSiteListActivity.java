@@ -1,14 +1,10 @@
 package com.example.asm2.AddDonationEditandDelete;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.asm2.Admin;
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.Database.DonationSitesDatabaseHelper;
 import com.example.asm2.R;
 
 import java.util.List;
@@ -16,7 +12,7 @@ import java.util.List;
 public class DonationSiteListActivity extends AppCompatActivity {
 
     private ListView listView;
-    private DatabaseHelper dbHelper;
+    private DonationSitesDatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +20,7 @@ public class DonationSiteListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_donation_site_list);
 
         listView = findViewById(R.id.listView);
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new DonationSitesDatabaseHelper(this);
 
         List<DonationSite> donationSites = dbHelper.getAllDonationSites();
         DonationSiteAdapter adapter = new DonationSiteAdapter(this, donationSites);

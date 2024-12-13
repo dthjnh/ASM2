@@ -6,14 +6,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.asm2.DatabaseHelper;
+import com.example.asm2.Database.DonorsDatabaseHelper;
 import com.example.asm2.R;
 
 public class RegisterDonorActivity extends AppCompatActivity {
 
     private EditText editName, editContact;
     private Button btnSubmit;
-    private DatabaseHelper dbHelper;
+    private DonorsDatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public class RegisterDonorActivity extends AppCompatActivity {
         editContact = findViewById(R.id.editContact);
         btnSubmit = findViewById(R.id.btnSubmit);
 
-        dbHelper = new DatabaseHelper(this);
+        dbHelper = new DonorsDatabaseHelper(this);
 
         // Get the site address from the intent
         String siteAddress = getIntent().getStringExtra("site_address");

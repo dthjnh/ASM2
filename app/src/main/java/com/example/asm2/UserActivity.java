@@ -34,8 +34,8 @@ public class UserActivity extends AppCompatActivity {
     }
 
     public void logoutUser(View view) {
-        FirebaseAuth.getInstance().signOut(); // Sign out from Firebase
+        FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(UserActivity.this, SignIn.class));
-        finish(); // Close the Admin activity
+        finish();
     }
 }
