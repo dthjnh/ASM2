@@ -2,10 +2,12 @@ package com.example.asm2.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +32,9 @@ public class SignIn extends AppCompatActivity {
     private EditText editEmailSignIn, editPasswordSignIn;
     private Button btnSignIn;
     private TextView signUpPrompt;
+    private ImageView imageViewTogglePassword;
     private Boolean valid = true;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +48,19 @@ public class SignIn extends AppCompatActivity {
         editPasswordSignIn = findViewById(R.id.editPasswordSignIn);
         btnSignIn = findViewById(R.id.btnSignIn);
         signUpPrompt = findViewById(R.id.signUpPrompt);
+        imageViewTogglePassword = findViewById(R.id.imageViewTogglePassword);
 
-
+        imageViewTogglePassword.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                editPasswordSignIn.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                imageViewTogglePassword.setImageResource(R.drawable.ic_eye);
+            } else {
+                editPasswordSignIn.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                imageViewTogglePassword.setImageResource(R.drawable.ic_eye_off);
+            }
+            isPasswordVisible = !isPasswordVisible;
+            editPasswordSignIn.setSelection(editPasswordSignIn.length());
+        });
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +88,6 @@ public class SignIn extends AppCompatActivity {
             }
         });
 
-
         signUpPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,24 +98,20 @@ public class SignIn extends AppCompatActivity {
 
     private void checkIUserAccessLevel(String uid) {
         DocumentReference df = fstore.collection("users").document(uid);
-        // Extract the data from Firestore
         df.get().addOnSuccessListener(documentSnapshot -> {
-            Log.d("TAG", "onSuccess: " + documentSnapshot.getData());
-
             if (documentSnapshot.getString("isSuperUser") != null) {
-                startActivity(new Intent(getApplicationContext(), SuperUserActivity.class)); // Redirect to Super User
+                startActivity(new Intent(getApplicationContext(), SuperUserActivity.class));
                 finish();
             } else if (documentSnapshot.getString("isAdmin") != null) {
-                startActivity(new Intent(getApplicationContext(), Admin.class)); // Redirect to Admin
+                startActivity(new Intent(getApplicationContext(), Admin.class));
                 finish();
             } else if (documentSnapshot.getString("isUser") != null) {
-                startActivity(new Intent(getApplicationContext(), UserActivity.class)); // Redirect to User
+                startActivity(new Intent(getApplicationContext(), UserActivity.class));
                 finish();
             } else {
                 Toast.makeText(SignIn.this, "Access level undefined!", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(e -> {
-            Log.e("TAG", "Error fetching user data", e);
             Toast.makeText(SignIn.this, "Error fetching user data", Toast.LENGTH_SHORT).show();
         });
     }
@@ -113,14 +123,13 @@ public class SignIn extends AppCompatActivity {
         }else {
             valid = true;
         }
-
         return valid;
     }
+
     @Override
     protected void onStart() {
         super.onStart();
         if (auth.getCurrentUser() != null) {
-            // Check user role and redirect
             checkIUserAccessLevel(auth.getCurrentUser().getUid());
         }
     }

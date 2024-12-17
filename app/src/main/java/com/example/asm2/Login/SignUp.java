@@ -1,36 +1,28 @@
 package com.example.asm2.Login;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asm2.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
+
     private FirebaseAuth auth;
-    private FirebaseFirestore fstore;
-    private EditText editFullName, editEmail, editPassword, editPhone, editDateofBirth;
+    private EditText editEmailSignUp, editPasswordSignUp;
     private Button btnSignUp;
     private TextView signInPrompt;
-    private ImageButton btnDatePicker;
-    private Boolean valid = true;
+    private ImageView imageViewTogglePasswordSignUp;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,105 +30,52 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         auth = FirebaseAuth.getInstance();
-        fstore = FirebaseFirestore.getInstance();
 
-        editFullName = findViewById(R.id.editFullName);
-        editEmail = findViewById(R.id.editEmail);
-        editPassword = findViewById(R.id.editPassword);
-        editPhone = findViewById(R.id.editPhone);
-        editDateofBirth = findViewById(R.id.editDateofBirth);
+        editEmailSignUp = findViewById(R.id.editEmail);
+        editPasswordSignUp = findViewById(R.id.editPasswordSignUp);
         btnSignUp = findViewById(R.id.btnSignUp);
         signInPrompt = findViewById(R.id.signInPrompt);
-        btnDatePicker = findViewById(R.id.btnDatePicker);
+        imageViewTogglePasswordSignUp = findViewById(R.id.imageViewTogglePasswordSignUp);
 
-        btnDatePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
+        imageViewTogglePasswordSignUp.setOnClickListener(v -> {
+            if (isPasswordVisible) {
+                editPasswordSignUp.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                imageViewTogglePasswordSignUp.setImageResource(R.drawable.ic_eye);
+            } else {
+                editPasswordSignUp.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                imageViewTogglePasswordSignUp.setImageResource(R.drawable.ic_eye_off);
             }
+            isPasswordVisible = !isPasswordVisible;
+            editPasswordSignUp.setSelection(editPasswordSignUp.length());
         });
 
-        btnSignUp.setOnClickListener(v -> {
-            checkField(editFullName);
-            checkField(editEmail);
-            checkField(editPassword);
-            checkField(editPhone);
-            checkField(editDateofBirth);
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = editEmailSignUp.getText().toString();
+                String password = editPasswordSignUp.getText().toString();
 
-            if (valid) {
-                // Start user registration
-                auth.createUserWithEmailAndPassword(editEmail.getText().toString(), editPassword.getText().toString())
+                if (email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(SignUp.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                auth.createUserWithEmailAndPassword(email, password)
                         .addOnSuccessListener(authResult -> {
-                            Toast.makeText(SignUp.this, "User created successfully. Please sign in.", Toast.LENGTH_SHORT).show();
-
-                            // Save user info to Firestore
-                            DocumentReference df = fstore.collection("users").document(auth.getCurrentUser().getUid());
-                            Map<String, Object> userInfo = new HashMap<>();
-                            userInfo.put("FullName", editFullName.getText().toString());
-                            userInfo.put("Email", editEmail.getText().toString());
-                            userInfo.put("Phone", editPhone.getText().toString());
-                            userInfo.put("DateOfBirth", editDateofBirth.getText().toString());
-
-                            // Assign roles
-                            if (editEmail.getText().toString().endsWith("@super.com")) {
-                                userInfo.put("isSuperUser", "1"); // Super User
-                            } else if (editEmail.getText().toString().endsWith("@admin.com")) {
-                                userInfo.put("isAdmin", "1"); // Admin
-                            } else {
-                                userInfo.put("isUser", "1"); // Regular User
-                            }
-
-                            df.set(userInfo).addOnSuccessListener(aVoid -> {
-                                // Log out the user
-                                auth.signOut();
-
-                                // Redirect to SignIn page
-                                Intent intent = new Intent(SignUp.this, SignIn.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish(); // Close the SignUp activity
-                            }).addOnFailureListener(e -> {
-                                Toast.makeText(SignUp.this, "Failed to save user info", Toast.LENGTH_SHORT).show();
-                            });
-                        }).addOnFailureListener(e -> {
-                            Toast.makeText(SignUp.this, "Failed to create user", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUp.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(SignUp.this, "Failed to sign up", Toast.LENGTH_SHORT).show();
                         });
-            } else {
-                Toast.makeText(SignUp.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             }
         });
 
         signInPrompt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SignUp.this, SignIn.class));
+                finish();
             }
         });
     }
-
-    public boolean checkField(EditText textField){
-        if(textField.getText().toString().isEmpty()){
-            textField.setError("Error");
-            valid = false;
-        }else {
-            valid = true;
-        }
-
-        return valid;
-    }
-
-    private void showDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                SignUp.this,
-                (view, year1, month1, dayOfMonth) -> editDateofBirth.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1),
-                year, month, day);
-        datePickerDialog.show();
-    }
 }
-
-

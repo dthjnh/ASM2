@@ -8,7 +8,6 @@
     android:background="@android:color/white"
     tools:context=".UserActivity">
 
-    <!-- Top Header Section -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -40,7 +39,6 @@
             android:layout_gravity="start"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Title and Info -->
         <TextView
             android:id="@+id/textTitle"
             android:layout_width="wrap_content"
@@ -63,7 +61,6 @@
             android:layout_marginTop="8dp"/>
     </LinearLayout>
 
-    <!-- Card Grid Layout -->
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/gridLayout"
         android:layout_width="0dp"
@@ -75,7 +72,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Add Site Button -->
         <Button
             android:id="@+id/btnAddSite"
             android:layout_width="wrap_content"
@@ -87,7 +83,6 @@
             android:textColor="@color/red_700"
             android:onClick="addDonationSite"/>
 
-        <!-- View Donors Button -->
         <Button
             android:id="@+id/btnViewDonors"
             android:layout_width="wrap_content"
@@ -99,7 +94,6 @@
             android:textColor="@color/red_700"
             android:onClick="viewDonors"/>
 
-        <!-- View Volunteers Button -->
         <Button
             android:id="@+id/btnViewVolunteers"
             android:layout_width="wrap_content"
@@ -112,7 +106,6 @@
             android:onClick="viewVolunteers"/>
     </androidx.gridlayout.widget.GridLayout>
 
-    <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
