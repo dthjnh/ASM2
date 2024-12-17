@@ -16,7 +16,7 @@ import com.example.asm2.R;
 
 public class AddDonationSiteUserActivity extends AppCompatActivity {
 
-    private EditText editAddress, editHours, editBloodTypes, editLatitude, editLongitude;
+    private EditText editName, editAddress, editHours, editBloodTypes, editLatitude, editLongitude;
     private Button btnSave, btnViewOnMap, btnListDonationSites;
     private DonationSitesDatabaseHelper dbHelper;
 
@@ -26,6 +26,7 @@ public class AddDonationSiteUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_donation_site_user);
 
+        editName = findViewById(R.id.editName);
         editAddress = findViewById(R.id.editAddress);
         editHours = findViewById(R.id.editHours);
         editBloodTypes = findViewById(R.id.editBloodTypes);
@@ -46,13 +47,14 @@ public class AddDonationSiteUserActivity extends AppCompatActivity {
         });
 
         btnSave.setOnClickListener(v -> {
+            String name = editName.getText().toString().trim();
             String address = editAddress.getText().toString().trim();
             String hours = editHours.getText().toString().trim();
             String bloodTypes = editBloodTypes.getText().toString().trim();
             String latitudeStr = editLatitude.getText().toString().trim();
             String longitudeStr = editLongitude.getText().toString().trim();
 
-            if (address.isEmpty() || hours.isEmpty() || bloodTypes.isEmpty() || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
+            if (name.isEmpty() || address.isEmpty() || hours.isEmpty() || bloodTypes.isEmpty() || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
                 Toast.makeText(AddDonationSiteUserActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -61,9 +63,10 @@ public class AddDonationSiteUserActivity extends AppCompatActivity {
                 double latitude = Double.parseDouble(latitudeStr);
                 double longitude = Double.parseDouble(longitudeStr);
 
-                boolean success = dbHelper.insertDonationSite(address, hours, bloodTypes, latitude, longitude, "user");
+                boolean success = dbHelper.insertDonationSite(name, address, hours, bloodTypes, latitude, longitude, "user");
                 if (success) {
                     Toast.makeText(AddDonationSiteUserActivity.this, "Donation site added successfully", Toast.LENGTH_SHORT).show();
+                    editName.setText("");
                     editAddress.setText("");
                     editHours.setText("");
                     editBloodTypes.setText("");

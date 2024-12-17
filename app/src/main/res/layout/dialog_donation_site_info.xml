@@ -9,6 +9,16 @@
         android:id="@+id/dialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Donation Site Name"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="#333333"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:id="@+id/dialogAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Donation Site Address"
         android:textStyle="bold"
         android:textSize="20sp"

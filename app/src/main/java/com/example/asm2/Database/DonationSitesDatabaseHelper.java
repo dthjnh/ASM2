@@ -14,10 +14,11 @@ import java.util.List;
 public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "DonationSites.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2; // Incremented version
 
     public static final String TABLE_NAME = "donation_sites";
     public static final String COLUMN_ID = "id";
+    public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ADDRESS = "address";
     public static final String COLUMN_HOURS = "hours";
     public static final String COLUMN_BLOOD_TYPES = "blood_types";
@@ -33,6 +34,7 @@ public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + " (" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_NAME + " TEXT NOT NULL, " +
                 COLUMN_ADDRESS + " TEXT NOT NULL, " +
                 COLUMN_HOURS + " TEXT NOT NULL, " +
                 COLUMN_BLOOD_TYPES + " TEXT NOT NULL, " +
@@ -44,13 +46,15 @@ public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COLUMN_NAME + " TEXT NOT NULL DEFAULT ''");
+        }
     }
 
-    public boolean insertDonationSite(String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
+    public boolean insertDonationSite(String name, String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, name);
         values.put(COLUMN_ADDRESS, address);
         values.put(COLUMN_HOURS, hours);
         values.put(COLUMN_BLOOD_TYPES, bloodTypes);
@@ -62,9 +66,10 @@ public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public boolean updateDonationSite(int id, String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
+    public boolean updateDonationSite(int id, String name, String address, String hours, String bloodTypes, double latitude, double longitude, String creatorType) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, name);
         values.put(COLUMN_ADDRESS, address);
         values.put(COLUMN_HOURS, hours);
         values.put(COLUMN_BLOOD_TYPES, bloodTypes);
@@ -90,13 +95,14 @@ public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
                 String address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
                 String hours = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_HOURS));
                 String bloodTypes = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BLOOD_TYPES));
                 double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LATITUDE));
                 double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LONGITUDE));
                 String creatorType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CREATOR_TYPE));
-                donationSites.add(new DonationSite(id, address, hours, bloodTypes, latitude, longitude, creatorType));
+                donationSites.add(new DonationSite(id, name, address, hours, bloodTypes, latitude, longitude, creatorType));
             }
             cursor.close();
         }
@@ -108,6 +114,7 @@ public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_NAME, null, COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
             String address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
             String hours = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_HOURS));
             String bloodTypes = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BLOOD_TYPES));
@@ -115,7 +122,7 @@ public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
             double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LONGITUDE));
             String creatorType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CREATOR_TYPE));
             cursor.close();
-            return new DonationSite(id, address, hours, bloodTypes, latitude, longitude, creatorType);
+            return new DonationSite(id, name, address, hours, bloodTypes, latitude, longitude, creatorType);
         }
         return null;
     }
@@ -133,13 +140,14 @@ public class DonationSitesDatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
                 String address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
                 String hours = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_HOURS));
                 String bloodTypes = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BLOOD_TYPES));
                 double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LATITUDE));
                 double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LONGITUDE));
                 String creatorType = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CREATOR_TYPE));
-                donationSites.add(new DonationSite(id, address, hours, bloodTypes, latitude, longitude, creatorType));
+                donationSites.add(new DonationSite(id, name, address, hours, bloodTypes, latitude, longitude, creatorType));
             }
             cursor.close();
         }

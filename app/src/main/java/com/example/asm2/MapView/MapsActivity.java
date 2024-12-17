@@ -103,8 +103,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
                 mMap.addMarker(new MarkerOptions()
                         .position(location)
-                        .title(site.getAddress())
-                        .snippet("Opening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
+                        .title(site.getName())
+                        .snippet("Address: " + site.getAddress() + "\nOpening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
                         .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
             }
 
@@ -124,8 +124,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
                     mMap.addMarker(new MarkerOptions()
                             .position(location)
-                            .title(site.getAddress())
-                            .snippet("Opening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
+                            .title(site.getName())
+                            .snippet("Address: " + site.getAddress() + "\nOpening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
                             .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
                 }
 
@@ -257,8 +257,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
             mMap.addMarker(new MarkerOptions()
                     .position(location)
-                    .title(site.getAddress())
-                    .snippet("Opening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
+                    .title(site.getName())
+                    .snippet("Address: " + site.getAddress() + "\nOpening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
                     .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
         }
 
@@ -274,25 +274,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialog.setContentView(R.layout.dialog_donation_site_info);
 
         TextView title = dialog.findViewById(R.id.dialogTitle);
+        TextView address = dialog.findViewById(R.id.dialogAddress);
         TextView hours = dialog.findViewById(R.id.dialogHours);
         TextView bloodTypes = dialog.findViewById(R.id.dialogBloodTypes);
         Button btnRegister = dialog.findViewById(R.id.btnDialogRegister);
         Button btnClose = dialog.findViewById(R.id.btnDialogClose);
-        Button btnFindRoute = dialog.findViewById(R.id.btnDialogFindRoute); // New button for finding route
+        Button btnFindRoute = dialog.findViewById(R.id.btnDialogFindRoute);
 
         // Populate dialog with marker info
-        title.setText(marker.getTitle());
+        title.setText(marker.getTitle()); // Show the site name (from marker title)
+
+        // Check if the marker's snippet contains the required info (address, hours, blood types)
         String[] snippetParts = marker.getSnippet().split("\n");
+
+        // Set the address, hours, and blood types if available
         if (snippetParts.length > 0) {
-            hours.setText(snippetParts[0]);
-        }
-        if (snippetParts.length > 1) {
-            bloodTypes.setText(snippetParts[1]);
+            address.setText(snippetParts[0]); // Set address
+        } else {
+            address.setText("No address available");
         }
 
+        if (snippetParts.length > 1) {
+            hours.setText(snippetParts[1]); // Set hours
+        } else {
+            hours.setText("No hours available");
+        }
+
+        if (snippetParts.length > 2) {
+            bloodTypes.setText(snippetParts[2]); // Set blood types
+        } else {
+            bloodTypes.setText("No blood types available");
+        }
+
+        // Handle button clicks
         btnRegister.setOnClickListener(v -> {
             Intent intent = new Intent(MapsActivity.this, RegisterDonorActivity.class);
-            intent.putExtra("site_address", marker.getTitle());
+            intent.putExtra("site_address", marker.getTitle()); // Pass the site name as address to RegisterDonorActivity
             startActivity(intent);
             dialog.dismiss();
         });

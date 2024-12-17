@@ -12,7 +12,7 @@ import com.example.asm2.R;
 
 public class EditDonationSiteActivity extends AppCompatActivity {
 
-    private EditText editAddress, editHours, editBloodTypes, editLatitude, editLongitude,editDescription;
+    private EditText editName, editAddress, editHours, editBloodTypes, editLatitude, editLongitude,editDescription;
     private Button btnSave;
     private DonationSitesDatabaseHelper dbHelper;
     private int siteId;
@@ -23,6 +23,7 @@ public class EditDonationSiteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_donation_site);
 
+        editName = findViewById(R.id.editName);
         editAddress = findViewById(R.id.editAddress);
         editHours = findViewById(R.id.editHours);
         editBloodTypes = findViewById(R.id.editBloodTypes);
@@ -45,6 +46,7 @@ public class EditDonationSiteActivity extends AppCompatActivity {
         // Load site data
         DonationSite site = dbHelper.getDonationSiteById(siteId);
         if (site != null) {
+            editName.setText(site.getName());
             editAddress.setText(site.getAddress());
             editHours.setText(site.getHours());
             editBloodTypes.setText(site.getBloodTypes());
@@ -58,6 +60,7 @@ public class EditDonationSiteActivity extends AppCompatActivity {
 
         // Save the updated data
         btnSave.setOnClickListener(v -> {
+            String name = editName.getText().toString().trim();
             String address = editAddress.getText().toString().trim();
             String hours = editHours.getText().toString().trim();
             String bloodTypes = editBloodTypes.getText().toString().trim();
@@ -65,7 +68,7 @@ public class EditDonationSiteActivity extends AppCompatActivity {
             String longitudeStr = editLongitude.getText().toString().trim();
             String description = editDescription.getText().toString().trim();
 
-            if (address.isEmpty() || hours.isEmpty() || bloodTypes.isEmpty() || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
+            if (name.isEmpty() || address.isEmpty() || hours.isEmpty() || bloodTypes.isEmpty() || latitudeStr.isEmpty() || longitudeStr.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -75,7 +78,7 @@ public class EditDonationSiteActivity extends AppCompatActivity {
                 double longitude = Double.parseDouble(longitudeStr);
 
                 // Update the donation site in the database
-                boolean success = dbHelper.updateDonationSite(siteId, address, hours, bloodTypes, latitude, longitude, description);
+                boolean success = dbHelper.updateDonationSite(siteId, name, address, hours, bloodTypes, latitude, longitude, description);
                 if (success) {
                     Toast.makeText(this, "Donation site updated successfully", Toast.LENGTH_SHORT).show();
                     finish();

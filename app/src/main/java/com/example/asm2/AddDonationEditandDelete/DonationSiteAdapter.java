@@ -34,6 +34,7 @@ public class DonationSiteAdapter extends ArrayAdapter<DonationSite> {
 
         DonationSite site = getItem(position);
 
+        TextView txtName = convertView.findViewById(R.id.txtName);
         TextView txtAddress = convertView.findViewById(R.id.txtAddress);
         TextView txtHours = convertView.findViewById(R.id.txtHours);
         TextView txtBloodTypes = convertView.findViewById(R.id.txtBloodTypes);
@@ -43,6 +44,7 @@ public class DonationSiteAdapter extends ArrayAdapter<DonationSite> {
         Button btnEdit = convertView.findViewById(R.id.btnEdit);
         Button btnDelete = convertView.findViewById(R.id.btnDelete);
 
+        txtName.setText(site.getName());
         txtAddress.setText(site.getAddress());
         txtHours.setText(site.getHours());
         txtBloodTypes.setText(site.getBloodTypes());
