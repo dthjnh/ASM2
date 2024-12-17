@@ -45,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Submit"
-        android:backgroundTint="#6200EE"
+        android:background="@drawable/button_rounded"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:padding="12dp"

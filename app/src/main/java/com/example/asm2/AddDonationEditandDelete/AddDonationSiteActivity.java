@@ -33,11 +33,6 @@ public class AddDonationSiteActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
         btnListDonationSites = findViewById(R.id.btnListDonationSites);
         btnViewOnMap = findViewById(R.id.btnViewOnMap);
-        btnBackToAdmin = findViewById(R.id.btnBackToAdmin);
-
-        btnBackToAdmin.setOnClickListener(v -> {
-            startActivity(new Intent(AddDonationSiteActivity.this, Admin.class));
-        });
 
         dbHelper = new DonationSitesDatabaseHelper(this);
 

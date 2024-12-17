@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.asm2.AddDonationEditandDelete.AddDonationSiteActivity;
 import com.example.asm2.AddDonationEditandDelete.DonationSiteListActivity;
 import com.example.asm2.Database.DonationSitesDatabaseHelper;
 import com.example.asm2.MapView.MapsActivity;
@@ -68,6 +69,7 @@ public class AddDonationSiteUserActivity extends AppCompatActivity {
                     editBloodTypes.setText("");
                     editLatitude.setText("");
                     editLongitude.setText("");
+                    startActivity(new Intent(AddDonationSiteUserActivity.this, DonationSiteListActivity.class));
                 } else {
                     Toast.makeText(AddDonationSiteUserActivity.this, "Error adding site", Toast.LENGTH_SHORT).show();
                 }

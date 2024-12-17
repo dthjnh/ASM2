@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,114 +8,124 @@
     android:background="@android:color/white"
     tools:context=".Admin">
 
-    <TextView
-        android:id="@+id/textAdminDashboard"
-        android:layout_width="wrap_content"
+    <!-- Top Header Section -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Admin Dashboard"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:textColor="@color/purple_700"
-        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        android:background="@drawable/header_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5" />
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnAddSite"
+        <!-- Title and Info -->
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Blood Donation Admin"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:id="@+id/textInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manage Sites, Donors &amp; More"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+
+    <!-- Card Grid Layout -->
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:columnCount="2"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Add Donation Site -->
+        <Button
+            android:id="@+id/btnAddSite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:drawableTop="@drawable/ic_add_site"
+            android:backgroundTint="@color/white"
+            android:text="Add Site"
+            android:textColor="@color/red_700"
+            android:onClick="addDonationSite"/>
+
+        <!-- View Donors -->
+        <Button
+            android:id="@+id/btnViewDonors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/ic_donors"
+            android:text="View Donors"
+            android:textColor="@color/red_700"
+            android:onClick="viewDonors"/>
+
+        <!-- Donation Drive -->
+        <Button
+            android:id="@+id/btnDonationDrive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:drawableTop="@drawable/ic_drive"
+            android:backgroundTint="@color/white"
+            android:text="Donation Drive"
+            android:textColor="@color/red_700"
+            android:onClick="donationDrive"/>
+
+        <!-- Register Volunteer -->
+        <Button
+            android:id="@+id/btnRegisterVolunteer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:drawableTop="@drawable/ic_register"
+            android:backgroundTint="@color/white"
+            android:text="Register Volunteer"
+            android:textColor="@color/red_700"
+            android:onClick="registerVolunteer"/>
+
+        <!-- View Volunteers -->
+        <Button
+            android:id="@+id/btnViewVolunteers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/ic_volunteers"
+            android:text="View Volunteers"
+            android:textColor="@color/red_700"
+            android:onClick="viewVolunteers"/>
+    </androidx.gridlayout.widget.GridLayout>
+
+    <!-- Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Add Donation Site"
-        android:backgroundTint="@color/teal_700"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:onClick="addDonationSite"
-        android:padding="12dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/textAdminDashboard"
+        android:background="@color/white"
+        app:itemIconTint="@color/red_700"
+        app:itemTextColor="@color/red_700"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <Button
-        android:id="@+id/btnViewDonors"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="View Donors"
-        android:backgroundTint="@color/blue_500"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:onClick="viewDonors"
-        android:padding="12dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/btnAddSite"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <Button
-        android:id="@+id/btnDonationDrive"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Donation Drive"
-        android:backgroundTint="@color/amber_500"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:padding="12dp"
-        android:onClick="donationDrive"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/btnViewDonors"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <Button
-        android:id="@+id/btnRegisterVolunteer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Register Volunteer"
-        android:backgroundTint="@color/green_500"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:padding="12dp"
-        android:onClick="registerVolunteer"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/btnDonationDrive"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <Button
-        android:id="@+id/btnViewVolunteers"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="View Volunteers"
-        android:backgroundTint="@color/deep_purple_500"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:padding="12dp"
-        android:onClick="viewVolunteers"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/btnRegisterVolunteer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:backgroundTint="@color/red_500"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:padding="12dp"
-        android:layout_marginTop="12dp"
-        android:onClick="logoutAdmin"
-        app:layout_constraintTop_toBottomOf="@id/btnViewVolunteers"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

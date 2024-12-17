@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="My Position"
-        android:backgroundTint="#6200EE"
+        android:backgroundTint="@color/gray_100"
         android:textColor="#FFFFFF"
         android:onClick="getPosition"
         android:padding="12dp"
