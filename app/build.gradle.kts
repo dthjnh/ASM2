@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.android.maps.utils)
     implementation(libs.gridlayout)
+    implementation(libs.volley)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

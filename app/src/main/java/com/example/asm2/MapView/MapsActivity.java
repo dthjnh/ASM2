@@ -13,6 +13,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +22,12 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.asm2.AddDonationEditandDelete.DonationSite;
 import com.example.asm2.Database.DonationSitesDatabaseHelper;
 import com.example.asm2.DonorRegister.RegisterDonorActivity;
@@ -40,13 +48,16 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -56,6 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationProviderClient;
     private SearchView mapSearch;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+    private List<Marker> searchMarkers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +82,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                filterDonationSites(query);
-                return true;
+                String location = mapSearch.getQuery().toString();
+                List<Address> addressList = null;
+                if (location != null && !location.equals("")) {
+                    Geocoder geocoder = new Geocoder(MapsActivity.this);
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (addressList != null && !addressList.isEmpty()) {
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        searchMarkers.add(marker);
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+                        // Trigger search for nearby blood donation centers
+                        searchNearbyBloodDonationCenters(latLng);
+
+                    } else {
+                        Toast.makeText(MapsActivity.this, "Location not found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                filterDonationSites(newText);
                 return false;
             }
         });
@@ -89,55 +123,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void filterDonationSites(String query) {
-        if (mMap == null) return;
-
-        // Clear existing markers
-        mMap.clear();
-
-        if (query == null || query.trim().isEmpty()) {
-            // Show all donation sites when the query is empty
-            List<DonationSite> allSites = dbHelper.getAllDonationSites();
-
-            for (DonationSite site : allSites) {
-                LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
-                mMap.addMarker(new MarkerOptions()
-                        .position(location)
-                        .title(site.getName())
-                        .snippet("Address: " + site.getAddress() + "\nOpening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
-                        .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
-            }
-
-            if (!allSites.isEmpty()) {
-                LatLng firstLocation = new LatLng(allSites.get(0).getLatitude(), allSites.get(0).getLongitude());
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15));
-                Toast.makeText(this, "Showing all donation sites.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "No donation sites available.", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            // Filter donation sites based on the query
-            List<DonationSite> filteredSites = dbHelper.getDonationSitesByBloodType(query.trim());
-
-            if (!filteredSites.isEmpty()) {
-                for (DonationSite site : filteredSites) {
-                    LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
-                    mMap.addMarker(new MarkerOptions()
-                            .position(location)
-                            .title(site.getName())
-                            .snippet("Address: " + site.getAddress() + "\nOpening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
-                            .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
-                }
-
-                // Move the camera to the first matching location and zoom in
-                LatLng firstLocation = new LatLng(filteredSites.get(0).getLatitude(), filteredSites.get(0).getLongitude());
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15));
-                Toast.makeText(this, "Found " + filteredSites.size() + " site(s) matching: " + query, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "No results found for: " + query, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    private void filterDonationSites(String query) {
+//        if (mMap == null) return;
+//
+//        // Clear existing markers
+//        mMap.clear();
+//
+//        if (query == null || query.trim().isEmpty()) {
+//            // Show all donation sites when the query is empty
+//            List<DonationSite> allSites = dbHelper.getAllDonationSites();
+//
+//            for (DonationSite site : allSites) {
+//                LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
+//                mMap.addMarker(new MarkerOptions()
+//                        .position(location)
+//                        .title(site.getName())
+//                        .snippet("Address: " + site.getAddress() + "\nOpening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
+//                        .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
+//            }
+//
+//            if (!allSites.isEmpty()) {
+//                LatLng firstLocation = new LatLng(allSites.get(0).getLatitude(), allSites.get(0).getLongitude());
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15));
+//                Toast.makeText(this, "Showing all donation sites.", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, "No donation sites available.", Toast.LENGTH_SHORT).show();
+//            }
+//        } else {
+//            // Filter donation sites based on the query
+//            List<DonationSite> filteredSites = dbHelper.getDonationSitesByBloodType(query.trim());
+//
+//            if (!filteredSites.isEmpty()) {
+//                for (DonationSite site : filteredSites) {
+//                    LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
+//                    mMap.addMarker(new MarkerOptions()
+//                            .position(location)
+//                            .title(site.getName())
+//                            .snippet("Address: " + site.getAddress() + "\nOpening Hours: " + site.getHours() + "\nBlood Type Required: " + site.getBloodTypes())
+//                            .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
+//                }
+//
+//                // Move the camera to the first matching location and zoom in
+//                LatLng firstLocation = new LatLng(filteredSites.get(0).getLatitude(), filteredSites.get(0).getLongitude());
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15));
+//                Toast.makeText(this, "Found " + filteredSites.size() + " site(s) matching: " + query, Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, "No results found for: " + query, Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -387,6 +421,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 runOnUiThread(() -> Toast.makeText(this, "Error fetching route", Toast.LENGTH_SHORT).show());
             }
         }).start();
+    }
+
+    private void searchNearbyBloodDonationCenters(LatLng center) {
+        String apiKey = "AIzaSyAmYG0ewlmb4zaJAkC6pBsFjqi0NBQu-Po";
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+                center.latitude + "," + center.longitude +
+                "&radius=5000&type=health&keyword=blood%20donation&key=" + apiKey;
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray results = response.getJSONArray("results");
+
+                            for (Marker marker : searchMarkers) {
+                                marker.remove();
+                            }
+                            searchMarkers.clear();
+
+                            for (int i = 0; i < results.length(); i++) {
+                                JSONObject site = results.getJSONObject(i);
+                                String name = site.getString("name");
+                                String address = site.getString("vicinity");
+                                String placeId = site.getString("place_id");
+                                double latitude = site.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+                                double longitude = site.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+
+                                String requiredBloodTypes = "O+, A+";
+                                String openingHours = "9:00 AM - 5:00 PM";
+
+                                LatLng siteLocation = new LatLng(latitude, longitude);
+
+                                Marker marker = mMap.addMarker(new MarkerOptions()
+                                        .position(siteLocation)
+                                        .title(name)
+                                        .snippet("Address: " + address + "\nRequired Blood Types: " + requiredBloodTypes + "\nOpening Hours: " + openingHours)
+                                        .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
+                                searchMarkers.add(marker);
+                            }
+
+                            Toast.makeText(MapsActivity.this, "Search complete", Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Toast.makeText(MapsActivity.this, "Error parsing search results", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MapsActivity.this, "Error fetching search results", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void drawPolyline(String encodedPolyline) {

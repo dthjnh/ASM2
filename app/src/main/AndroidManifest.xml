@@ -58,7 +58,10 @@
         <activity android:name=".AdminandUserViewVolunteer.ViewVolunteerActivity" />
         <activity android:name=".AdminandUserViewVolunteer.RegisterVolunteerActivity" />
         <activity android:name=".AdminandUserViewVolunteer.UserViewVolunteerActivity" />
-        <activity android:name=".SuperUserActivity"/>
+        <activity android:name=".SuperUserActivity" />
+        <activity android:name=".Info.UserProfileActivity" />
+        <activity android:name=".Info.AccountInfoActivity" />
+        <activity android:name=".EmergencyContact.EmergencyContactsActivity"/>
     </application>
 
 </manifest>

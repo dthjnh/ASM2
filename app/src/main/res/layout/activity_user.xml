@@ -8,104 +8,26 @@
     android:background="@android:color/white"
     tools:context=".UserActivity">
 
-    <LinearLayout
-        android:id="@+id/headerLayout"
+    <!-- Fragment Container for Header -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/headerFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/header_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="20dp">
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/greetingTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello, User"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
-            android:layout_gravity="start"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:id="@+id/phoneTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="111"
-            android:textSize="18sp"
-            android:textColor="@android:color/darker_gray"
-            android:layout_gravity="start"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Blood Donation User"
-            android:textSize="24sp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:layout_marginTop="24dp"/>
-
-        <TextView
-            android:id="@+id/textInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Manage Sites, Donors &amp; More"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"/>
-    </LinearLayout>
-
-    <androidx.gridlayout.widget.GridLayout
-        android:id="@+id/gridLayout"
+    <!-- Fragment Container for Grid -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/gridFragmentContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="16dp"
-        app:columnCount="2"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintTop_toBottomOf="@id/headerFragmentContainer"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:id="@+id/btnAddSite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:drawableTop="@drawable/ic_add_site"
-            android:backgroundTint="@color/white"
-            android:text="Add Site"
-            android:textColor="@color/red_700"
-            android:onClick="addDonationSite"/>
-
-        <Button
-            android:id="@+id/btnViewDonors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/white"
-            android:drawableTop="@drawable/ic_donors"
-            android:text="View Donors"
-            android:textColor="@color/red_700"
-            android:onClick="viewDonors"/>
-
-        <Button
-            android:id="@+id/btnViewVolunteers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/white"
-            android:drawableTop="@drawable/ic_volunteers"
-            android:text="View Volunteers"
-            android:textColor="@color/red_700"
-            android:onClick="viewVolunteers"/>
-    </androidx.gridlayout.widget.GridLayout>
-
+    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
