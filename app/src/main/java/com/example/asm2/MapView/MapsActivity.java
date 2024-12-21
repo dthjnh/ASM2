@@ -18,6 +18,8 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +61,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -121,6 +124,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        findViewById(R.id.filterButton).setOnClickListener(v -> showFilterDialog());
+    }
+
+    private void showFilterDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.filter_dialog);
+
+        CheckBox filterBloodType = dialog.findViewById(R.id.filterBloodType);
+        EditText bloodTypeInput = dialog.findViewById(R.id.bloodTypeInput);
+        Button applyFilterButton = dialog.findViewById(R.id.applyFilterButton);
+
+        applyFilterButton.setOnClickListener(v -> {
+            boolean byBloodType = filterBloodType.isChecked();
+            String bloodType = bloodTypeInput.getText().toString().trim();
+
+            applyFilters(byBloodType, bloodType);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
 //    private void filterDonationSites(String query) {
@@ -503,6 +527,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    private void applyFilters(boolean byBloodType, String bloodType) {
+        if (mMap == null) return;
+
+        // Clear existing markers
+        mMap.clear();
+
+        // Retrieve all donation sites
+        List<DonationSite> donationSites = dbHelper.getAllDonationSites();
+
+        if (donationSites.isEmpty()) {
+            Toast.makeText(this, "No donation sites available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Filter by blood type
+        if (byBloodType) {
+            donationSites = donationSites.stream()
+                    .filter(site -> site.getRequiredBloodTypes().contains(bloodType))
+                    .collect(Collectors.toList());
+        }
+
+        addFilteredMarkers(donationSites);
+    }
+
+
+    private void addFilteredMarkers(List<DonationSite> donationSites) {
+        for (DonationSite site : donationSites) {
+            LatLng location = new LatLng(site.getLatitude(), site.getLongitude());
+            mMap.addMarker(new MarkerOptions()
+                    .position(location)
+                    .title(site.getName())
+                    .snippet("Address: " + site.getAddress() + "\nBlood Type Required: " + site.getBloodTypes())
+                    .icon(getBitmapDescriptorFromVector(R.drawable.custom_marker)));
+        }
+
+        if (!donationSites.isEmpty()) {
+            LatLng firstLocation = new LatLng(donationSites.get(0).getLatitude(), donationSites.get(0).getLongitude());
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15));
+        } else {
+            Toast.makeText(this, "No donation sites available.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -518,4 +585,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void getPosition(View view) {
         getCurrentPosition(view);
     }
+
+
 }

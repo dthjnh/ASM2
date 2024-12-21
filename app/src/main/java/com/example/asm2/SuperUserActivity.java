@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.example.asm2.AddDonationEditandDelete.DonationSite;
 import com.example.asm2.Database.DonationDriveDatabaseHelper;
 import com.example.asm2.Database.DonationSitesDatabaseHelper;
@@ -52,7 +53,8 @@ public class SuperUserActivity extends AppCompatActivity {
             StringBuilder sitesList = new StringBuilder();
 
             for (DonationSite site : donationSites) {
-                sitesList.append("\nAddress: ").append(site.getAddress()).append("\n")
+                sitesList.append("\nDonation Site: ").append(site.getName()).append("\n")
+                         .append("Address: ").append(site.getAddress()).append("\n")
                          .append("Opening Hours: ").append(site.getHours()).append("\n")
                          .append("Blood Types Required: ").append(site.getBloodTypes()).append("\n")
                          .append("Latitude: ").append(site.getLatitude()).append("\n")
