@@ -130,7 +130,7 @@ public class SuperUserActivity extends AppCompatActivity {
 
             // Generate report summary
             report.append("\n\nDonation Drive Report:\n")
-                    .append("\nTotal Blood Volume: ").append(totalBloodVolume).append(" Liters\n")
+                    .append("\nTotal Blood Volume: ").append(totalBloodVolume).append(" Mililiters\n")
                     .append("\nBlood Types Collected: ").append(bloodTypesCollected.toString().replaceAll(", $", "")).append("\n")
                     .append("Blood Type A: ").append(bloodTypeA).append(" ml\n")
                     .append("Blood Type B: ").append(bloodTypeB).append(" ml\n")
