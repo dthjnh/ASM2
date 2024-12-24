@@ -45,9 +45,9 @@ public class DonationSiteAdapter extends ArrayAdapter<DonationSite> {
         Button btnDelete = convertView.findViewById(R.id.btnDelete);
 
         txtName.setText(site.getName());
-        txtAddress.setText(site.getAddress());
-        txtHours.setText(site.getHours());
-        txtBloodTypes.setText(site.getBloodTypes());
+        txtAddress.setText("Address: " + site.getAddress());
+        txtHours.setText("Opening Hours: " + site.getHours());
+        txtBloodTypes.setText("Blood Type Require: " + site.getBloodTypes());
         txtLatitude.setText("Lat: " + site.getLatitude());
         txtLongitude.setText("Lng: " + site.getLongitude());
         txtCreatorType.setText("Created by: " + site.getCreatorType());
