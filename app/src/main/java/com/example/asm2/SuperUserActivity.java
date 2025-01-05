@@ -46,7 +46,6 @@ public class SuperUserActivity extends AppCompatActivity {
     private void generateReport() {
         StringBuilder report = new StringBuilder();
 
-        // Fetch data from the donation sites table
         List<DonationSite> donationSites = donationSitesDatabaseHelper.getAllDonationSites();
         if (!donationSites.isEmpty()) {
             int totalSites = donationSites.size();
